@@ -11,6 +11,10 @@ class fit_models():
         # assert len of input x and y
         assert len(y)==len(x)
         # save it into self
+        # get 20% interval for x 
+        inv_x=(max(x)-min(x))*0.1
+        if inv_x<1:
+            inv_x=1
         self.y=y
         self.x=x
         self.pred_y=[]
@@ -18,7 +22,7 @@ class fit_models():
         self.params=[]
         self.function_name=None
         self.function_type=None
-        self.x_axis=np.linspace(int(min(self.x)-1), int(max(self.x)+1), 50) 
+        self.x_axis=np.linspace(int(min(self.x)-inv_x), int(max(self.x)+inv_x), 50) 
         self.y_axis=[]
         
     def linear_regression(self):
@@ -142,12 +146,19 @@ def generate_result(fits, x_axis_label, y_axis_label):
     y=fits.y
     pred_y=fits.pred_y
     title="Function: "+fits.function_name+"  MSE: %0.3f"% round(fits.MSE,3)
+    # get 20% interval for x and y
+    inv_x=(max(x)-min(x))*0.2
+    inv_y=(max(y)-min(y))*0.2
+    if inv_x<1:
+        inv_x=1
+    if inv_y<1:
+        inv_y=1
     ##############
     # create a losss curve plot
     output_file("result.html")
     p = figure(width=800, height=600,
-               x_range=[int(min(x)-2), int(max(x)+2)],
-               y_range=[int(min(y)-2), int(max(y)+2)],
+               x_range=[int(min(x)-inv_x), int(max(x)+inv_x)],
+               y_range=[int(min(y)-inv_y), int(max(y)+inv_y)],
                x_axis_label= x_axis_label,
                y_axis_label= y_axis_label,
                title=title)
