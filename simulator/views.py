@@ -12,7 +12,7 @@ def tools(request):
 
 def result(request):
     if request.method=="GET":
-        return render(request, 'simulator/result.html')
+        return render(request, 'simulator/example_result.html')
     else:
         try:
             # upload data
