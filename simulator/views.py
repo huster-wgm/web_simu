@@ -32,12 +32,14 @@ def result(request):
             fit = fit_models(y,x)
             if type_of_f=="1":
                 # execute linear regression
-                fit.linear_regression()
+                result=fit.linear_regression()
             elif type_of_f=='2':
                 # execute polynomial regression up to power 3
-                fit.polynomial_regression()
+                result=fit.polynomial_regression()
             elif type_of_f=='3':
-                fit.sigmoid_regression()
+                result=fit.sigmoid_regression()
+            elif type_of_f=='4':
+                result=fit.all_regression()
             else:
                 raise ValueError
                       
@@ -45,7 +47,8 @@ def result(request):
             x_axis=request.POST["x_axis"]
             # name of y_axis
             y_axis=request.POST["y_axis"]
-            html=generate_result(fit)  
+            
+            html=generate_result(result,x_axis,y_axis)  
         except:
             return render(request, 'simulator/error.html')
         return render(request, 'simulator/example_result.html')

@@ -13,6 +13,7 @@ class fit_models():
         self.MSE=None
         self.params=[]
         self.function_name=None
+        self.function_type=None
 
     def linear_regression(self):
         # def linear function
@@ -29,9 +30,11 @@ class fit_models():
         MSE = mean_squared_error(self.y,pred_y)
         # save records into self object
         self.function_name="y={0}+({1}*x)".format(params[0],params[1])
+        self.function_type="linear"
         self.pred_y=pred_y
         self.MSE=MSE
         self.params=params
+        return self
 
     def polynomial_regression(self):
         # def polynnomial function up to power 2
@@ -63,6 +66,7 @@ class fit_models():
             self.pred_y=pred_y_2
             self.MSE=MSE_2
             self.params=params_2
+            self.function_type="poly_2"
         else:
             # choose power 3
             # save records into self object
@@ -71,7 +75,9 @@ class fit_models():
             self.pred_y=pred_y_3
             self.MSE=MSE_3
             self.params=params_3
-
+            self.function_type="poly_3"
+        return self
+        
     def sigmoid_regression(self):
         self.function_name="sigmoid"
         # def sigmoid function
@@ -94,34 +100,66 @@ class fit_models():
         self.MSE=MSE
         params=np.insert(params,3,min_y)
         self.params=params
+        self.function_type="sigmoid"
+        return self
         
+    def all_regression(self):
+        fits = fit_models(self.y,self.x)
+        linear_MSE = fits.linear_regression().MSE
+        poly_MSE = fits.polynomial_regression().MSE
+        sigmoid_MSE = fits.sigmoid_regression().MSE
+        mse_list=[linear_MSE,poly_MSE,sigmoid_MSE]
+        index_of_min=mse_list.index(min(mse_list))
+        if index_of_min==0:
+            return fits.linear_regression()
+        elif index_of_min==1:
+            return fits.polynomial_regression()
+        elif index_of_min==2:
+            return fits.sigmoid_regression()
+        else:
+            raise ValueError  
+
+        
+ 
+
 def test():        
     x=[1,2,3,4,5,6]
     y=[1,4,9,15,25,36]
     
     fits=fit_models(y,x)
-    print(  fits.function_name,
+    print(  "EMPTY RESULT \n", 
+            fits.function_name,
             fits.params,
             fits.MSE,
             fits.pred_y,)
             
-    fits.linear_regression()
-    print(  fits.function_name,
-            fits.params,
-            fits.MSE,
-            fits.pred_y,)
+    linear=fits.linear_regression()
+    print(  "linear \n",
+            linear.function_name,
+            linear.params,
+            linear.MSE,
+            linear.pred_y,)
             
-    fits.polynomial_regression()
-    print(  fits.function_name,
-            fits.params,
-            fits.MSE,
-            fits.pred_y,)
+    poly=fits.polynomial_regression()
+    print(  "poly \n",
+            poly.function_name,
+            poly.params,
+            poly.MSE,
+            poly.pred_y,)
             
-    fits.sigmoid_regression()
-    print(  fits.function_name,
-            fits.params,
-            fits.MSE,
-            fits.pred_y,)
+    sigmoid=fits.sigmoid_regression()
+    print(  "sigmoid \n",
+            sigmoid.function_name,
+            sigmoid.params,
+            sigmoid.MSE,
+            sigmoid.pred_y,)
+            
+    all_three=fits.all_regression()
+    print(  "all three \n",
+            all_three.function_name,
+            all_three.params,
+            all_three.MSE,
+            all_three.pred_y,)        
         
 
 if __name__=="__main__":
