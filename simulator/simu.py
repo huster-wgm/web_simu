@@ -1,6 +1,10 @@
 import numpy as np
 from scipy.optimize import curve_fit
 from sklearn.metrics import mean_squared_error
+from bokeh.plotting import figure,output_file,show
+from bokeh.layouts import widgetbox
+from bokeh.models import ColumnDataSource
+from bokeh.models.widgets import DataTable, TableColumn
 
 class fit_models():
     def __init__(self,y,x):
@@ -14,7 +18,9 @@ class fit_models():
         self.params=[]
         self.function_name=None
         self.function_type=None
-
+        self.x_axis=np.linspace(int(min(self.x)-1), int(max(self.x)+1), 50) 
+        self.y_axis=[]
+        
     def linear_regression(self):
         # def linear function
         def simu_linear(var_x,a,b):
@@ -26,6 +32,9 @@ class fit_models():
         params = np.round(params,2)
         # get predict y value by simulation function
         pred_y = simu_linear(self.x,params[0],params[1])
+        # generate regression curve data
+        y_axis = simu_linear(self.x_axis,params[0],params[1])
+        
         # get mean squre error of pred_y and actual y
         MSE = mean_squared_error(self.y,pred_y)
         # save records into self object
@@ -34,6 +43,7 @@ class fit_models():
         self.pred_y=pred_y
         self.MSE=MSE
         self.params=params
+        self.y_axis=y_axis
         return self
 
     def polynomial_regression(self):
@@ -54,6 +64,9 @@ class fit_models():
         # get predict y value by simulation function
         pred_y_2 = simu_poly_2(self.x,params_2[0],params_2[1],params_2[2])
         pred_y_3 = simu_poly_3(self.x,params_3[0],params_3[1],params_3[2],params_3[3])
+        # generate serial predict y values 
+        y_axis_2 = simu_poly_2(self.x_axis,params_2[0],params_2[1],params_2[2])
+        y_axis_3 = simu_poly_3(self.x_axis,params_3[0],params_3[1],params_3[2],params_3[3])
         # get mean squre error of pred_y and actual y
         MSE_2 = mean_squared_error(self.y,pred_y_2)
         MSE_3 = mean_squared_error(self.y,pred_y_3)
@@ -63,25 +76,26 @@ class fit_models():
             # save records into self object
             self.function_name="y={0}+({1}*x)+({2}*x^2)".format(params_2[0],
                                                     params_2[1],params_2[2])
+            self.function_type="poly_2"                                        
             self.pred_y=pred_y_2
             self.MSE=MSE_2
             self.params=params_2
-            self.function_type="poly_2"
+            self.y_axis=y_axis_2
         else:
             # choose power 3
             # save records into self object
             self.function_name="y={0}+({1}*x)+({2}*x^2)+({3}*x^3)".format(params_3[0],
                                             params_3[1],params_3[2],params_3[3])
+            self.function_type="poly_3"
             self.pred_y=pred_y_3
             self.MSE=MSE_3
             self.params=params_3
-            self.function_type="poly_3"
+            self.y_axis=y_axis_3
         return self
         
     def sigmoid_regression(self):
-        self.function_name="sigmoid"
         # def sigmoid function
-        min_y=np.min(self.y)
+        min_y=np.round(np.min(self.y),2)
         y_minus=np.array(self.y)-min_y
         # make simulation base on y_minus
         def simu_simgoid(var_x,a,b,c):
@@ -92,15 +106,18 @@ class fit_models():
         params = np.round(params,2)
         # get predict y value by simulation function
         pred_y = simu_simgoid(self.x,params[0],params[1],params[2])+min_y
+        # generate serial predict y values
+        y_axis = simu_simgoid(self.x_axis,params[0],params[1],params[2])+min_y
         # get mean squre error of pred_y and actual y
         MSE = mean_squared_error(self.y,pred_y)
         # save records into self object
         self.function_name="y={0}/(1+exp(-{1}*(x+{2})))+{3}".format(params[0],params[1],params[2],min_y)
+        self.function_type="sigmoid"        
         self.pred_y=pred_y
         self.MSE=MSE
         params=np.insert(params,3,min_y)
         self.params=params
-        self.function_type="sigmoid"
+        self.y_axis=y_axis
         return self
         
     def all_regression(self):
@@ -118,9 +135,56 @@ class fit_models():
             return fits.sigmoid_regression()
         else:
             raise ValueError  
+        return 0    
 
-        
- 
+def generate_result(fits, x_axis_label, y_axis_label):
+    x=fits.x
+    y=fits.y
+    pred_y=fits.pred_y
+    title="Function: "+fits.function_name+"  MSE: %0.3f"% round(fits.MSE,3)
+    ##############
+    # create a losss curve plot
+    output_file("result.html")
+    p = figure(width=800, height=600,
+               x_range=[int(min(x)-2), int(max(x)+2)],
+               y_range=[int(min(y)-2), int(max(y)+2)],
+               x_axis_label= x_axis_label,
+               y_axis_label= y_axis_label,
+               title=title)
+    
+    p.title.text_font_size = "16pt"
+    # add circle and line
+    p.circle(x, y, legend="Actual data", color="purple", line_color=None, size=12,alpha=0.8)
+    p.line(fits.x_axis, fits.y_axis, legend="Regression curve",line_color="blue",alpha=0.6)
+    p.xgrid.grid_line_color = None
+    p.ygrid.grid_line_color = None
+    p.xaxis.axis_label_text_font_size = "20pt"
+    p.yaxis.axis_label_text_font_size = "20pt"
+    ####### create widgets
+    
+    data = dict(
+            x=x,
+            y=np.round(y,3),
+            y_predict=np.round(pred_y,3),
+        )
+    source = ColumnDataSource(data)
+    columns = [
+            TableColumn(field="x", title=x_axis_label),
+            TableColumn(field="y", title=y_axis_label),
+            TableColumn(field="y_predict", title="Predict_Y"),
+        ]
+    data_table = DataTable(source=source, columns=columns, width=300, height=500)
+    
+    
+    
+    widgets=widgetbox(data_table, width=350)
+    
+    
+    from bokeh.layouts import row
+    # put the results in a row
+    show(row(widgets, p))
+    
+    
 
 def test():        
     x=[1,2,3,4,5,6]

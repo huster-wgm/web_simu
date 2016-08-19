@@ -81,11 +81,20 @@ body {
 }
 .col-lg-4 p {
   font-size: 20px ;
-  margin-right: 50px ;
-  margin-left: 50px;
+  margin-right: 60px ;
+  margin-left: 60px;
 
 }
 
+.mycss_1 {
+  padding-top:100px;
+  height:200px;
+  min-width:100% ;
+  margin-bottom: 10px;
+  text-align: center;
+  color: #999;
+  font-size: 20px;
+}
 .mycss {
   padding-top:300px;
   height:500px;
@@ -95,7 +104,6 @@ body {
   color: #999;
   font-size: 20px;
 }
-
 .scheduler-border {
     padding-top:20px;
     border: 1px groove #ddd !important;
