@@ -234,8 +234,9 @@ def test():
             all_three.function_name,
             all_three.params,
             all_three.MSE,
-            all_three.pred_y,)        
-        
+            all_three.pred_y,)      
+            
+    generate_result(fits, "x_axis_label", "y_axis_label")    
 
 if __name__=="__main__":
     test()
