@@ -2,10 +2,6 @@ from django.shortcuts import render
 from simu import fit_models
 
 
-def file_format(request,file):
-    file_name=str(file)
-    if not file_name.endswith('.csv'):
-        return render(request, 'simulator/error.html')
 
 # Create your views here.
 def home(request):
