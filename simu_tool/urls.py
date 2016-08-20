@@ -16,6 +16,7 @@ Including another URLconf
 from django.conf.urls import url,include
 from django.contrib import admin
 from . import views
+from . import settings
 
 urlpatterns = [
     url(r'^$', views.index, name='index'),
@@ -23,3 +24,8 @@ urlpatterns = [
     url(r'^polls/',include('polls.urls')),
     url(r'^simulator/', include('simulator.urls')),
 ]
+
+if not settings.DEBUG:
+    urlpatterns += url('',
+        (r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.STATIC_ROOT}),
+    )
