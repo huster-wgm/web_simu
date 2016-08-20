@@ -1,10 +1,12 @@
 import numpy as np
 from scipy.optimize import curve_fit
 from sklearn.metrics import mean_squared_error
-from bokeh.plotting import figure,output_file,show
-from bokeh.layouts import widgetbox
+from bokeh.plotting import figure
+from bokeh.layouts import widgetbox,row
 from bokeh.models import ColumnDataSource
 from bokeh.models.widgets import DataTable, TableColumn
+from bokeh.resources import CDN
+from bokeh.embed import file_html
 
 class fit_models():
     def __init__(self,y,x):
@@ -154,8 +156,7 @@ def generate_result(fits, x_axis_label, y_axis_label):
     if inv_y<1:
         inv_y=1
     ##############
-    # create a losss curve plot
-    output_file("result.html")
+
     p = figure(width=800, height=600,
                x_range=[int(min(x)-inv_x), int(max(x)+inv_x)],
                y_range=[int(min(y)-inv_y), int(max(y)+inv_y)],
@@ -171,8 +172,8 @@ def generate_result(fits, x_axis_label, y_axis_label):
     p.ygrid.grid_line_color = None
     p.xaxis.axis_label_text_font_size = "20pt"
     p.yaxis.axis_label_text_font_size = "20pt"
-    ####### create widgets
     
+    ####### create widgets
     data = dict(
             x=x,
             y=np.round(y,3),
@@ -186,17 +187,12 @@ def generate_result(fits, x_axis_label, y_axis_label):
         ]
     data_table = DataTable(source=source, columns=columns, width=300, height=500)
     
-    
-    
     widgets=widgetbox(data_table, width=350)
-    
-    
-    from bokeh.layouts import row
     # put the results in a row
-    show(row(widgets, p))
+    p=row(widgets, p)
+    html = file_html(p, CDN, "result")
+    return html
     
-    
-
 def test():        
     x=[1,2,3,4,5,6]
     y=[1,4,9,15,25,36]
