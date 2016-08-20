@@ -8,7 +8,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Result</title>
+    <title>tools</title>
 
     <!-- Bootstrap core CSS -->
     {% load staticfiles %}
@@ -30,6 +30,7 @@
   ================================================== -->
 
   <body>
+
     <div class="navbar-wrapper">
       <div class="container">
 
@@ -45,9 +46,9 @@
               <a class="navbar-brand" href="#"><b>Simulator</b></a>
               <div id="navbar" class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                  <li><a href="">Home</a></li>
-                  <li><a href="./tools">Tools</a></li>
-                  <li class="active"><a href="">Results</a></li>
+                  <li><a href=".">Home</a></li>
+                  <li class="active"><a href="">Tools</a></li>
+                  <li><a href="./result">Results</a></li>
                 </ul>
               </div>
             </div>
@@ -55,17 +56,38 @@
         </nav>
       </div>
     </div>
-    <!-- Marketing messaging and featurettes
-       ================================================== -->
-       <!-- Wrap the rest of the page in another container to center all the content. -->
 
-   <div class="mycss">
-     <p>
-     <h1>THIS IS AN EMPTY PAGE</h1>
-     <h1>Your should first upload data and </h1>
-     <h1> setup parameters to see the simulation result.</h1>
-     </p>
-   </div>
+
+  <div class="mycss_1">
+    <h1></h1>
+  </div>
+
+  <div class="container">
+
+    <form action="./result" method="post" enctype="multipart/form-data" >{% csrf_token %}
+      <fieldset class="scheduler-border">
+          <legend>Upload data </legend>
+          <label class="badge">Your Data:</label>
+          <input type="file" name="upfile" required>
+      </fieldset>
+      <br/>
+      <fieldset class="scheduler-border">
+          <legend>Sectect Parameters</legend>
+          <label class="badge">Type of function :</label>
+            <select class="form-control" name="types" required>
+              <option value="1"><b>Linear function</b></option>
+              <option value="2"><b>Polynomial function</b></option>
+              <option value="3"><b>Sigmoid function</b></option>
+              <option value="4"><b>Try three available function and return the best one!</b></option>
+            </select>
+          <label class="badge">X_axis:</label>
+            <input type="text" name="x_axis" required><br>
+          <label class="badge">Y_axis:</label>
+            <input type="text" name="y_axis" required><br>
+      </fieldset>
+      <input type="submit" value="Submit"class="btn btn-primary">
+    </form>
+  </div>
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->

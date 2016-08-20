@@ -1,3 +1,4 @@
+
 <html lang="en">
   <head>
     <meta charset="utf-8">
@@ -11,7 +12,7 @@
 
     <!-- Bootstrap core CSS -->
     {% load staticfiles %}
-    <link href="{% static "bootstrap/css/bootstrap.min.css"  %}"rel="stylesheet">
+    <link href="{% static 'bootstrap/css/bootstrap.min.css' %}"rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -21,7 +22,7 @@
 
     <!-- Custom styles for this template -->
     {% load staticfiles %}
-    <link href="{% static "bootstrap/css/carousel.css" %}" rel="stylesheet">
+    <link href="{% static 'bootstrap/css/carousel.css' %}" rel="stylesheet">
   </head>
 
 
@@ -83,7 +84,7 @@
       <div class="carousel-inner" role="listbox">
         <div class="item active">
           {% load staticfiles %}
-          <img class="img-responsive" src="{% static "upload.png" %}" alt="First slide"/>
+          <img class="img-responsive" src="{% static 'upload.png' %}" alt="First slide"/>
           <div class="container">
             <div class="carousel-caption">
               <p><a class="btn btn-lg btn-primary" >Upload .csv file</a></p>
@@ -92,7 +93,7 @@
         </div>
         <div class="item">
           {% load staticfiles %}
-          <img class="img-responsive" src="{% static "set_parameter.png" %}" alt="Second slide"/>
+          <img class="img-responsive" src="{% static 'set_parameter.png' %}" alt="Second slide"/>
           <div class="container">
             <div class="carousel-caption">
 
@@ -102,7 +103,7 @@
         </div>
         <div class="item">
           {% load staticfiles %}
-          <img class="img-responsive" src="{% static "result.png" %}" alt="Third slide"/>
+          <img class="img-responsive" src="{% static 'result.png' %}" alt="Third slide"/>
           <div class="container">
             <div class="carousel-caption">
 
@@ -126,6 +127,6 @@
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     {% load staticfiles %}
-    <script src="{% static "bootstrap/js/bootstrap.min.js" %}"></script>
+    <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
   </body>
 </html>
