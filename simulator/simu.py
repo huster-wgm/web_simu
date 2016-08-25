@@ -143,10 +143,25 @@ class fit_models():
             raise ValueError  
         return 0    
 
-def generate_result(fits, x_axis_label, y_axis_label):
+def generate_result(fits,request):
     x=fits.x
-    y=fits.y
-    pred_y=fits.pred_y
+    # set precision of 3 for y and pred_y
+    # notice that np.round() don't work
+    y=fits.y.tolist()
+    y=[round(i,3) for i in y]
+    pred_y=fits.pred_y.tolist()
+    pred_y=[round(j,2) for j in pred_y]
+    # name of x_axis
+    x_axis_label=request.POST["x_axis"]
+    # name of y_axis
+    y_axis_label=request.POST["y_axis"]
+    # type of maker 
+    maker=request.POST["maker"]
+    # color for maker
+    maker_color=request.POST["marker_color"]
+    # color for curve
+    curve_color=request.POST["curve_color"]
+    print ("load request success")
     title="Function: "+fits.function_name+"  MSE: %0.3f"% round(fits.MSE,3)
     # get 20% interval for x and y
     inv_x=(max(x)-min(x))*0.2
@@ -166,8 +181,17 @@ def generate_result(fits, x_axis_label, y_axis_label):
     
     p.title.text_font_size = "16pt"
     # add circle and line
-    p.circle(x, y, legend="Actual data", color="purple", line_color=None, size=12,alpha=0.8)
-    p.line(fits.x_axis, fits.y_axis, legend="Regression curve",line_color="blue",alpha=0.6)
+    if maker=="1":
+        p.circle(x, y, legend="Actual data", color=maker_color, line_color=None, size=12,alpha=0.8)
+    elif maker=="2":
+        p.triangle(x, y, legend="Actual data", color=maker_color, line_color=None, size=12,alpha=0.8)
+    elif maker=="3":
+        p.square(x, y, legend="Actual data", color=maker_color, line_color=None, size=12,alpha=0.8)
+    elif maker=="4":
+        p.diamond(x, y, legend="Actual data", color=maker_color, line_color=None, size=12,alpha=0.8)
+    else:
+        p.asterisk(x, y, legend="Actual data", color=maker_color, line_color=None, size=12,alpha=0.8)
+    p.line(fits.x_axis, fits.y_axis, legend="Regression curve",line_color=curve_color,alpha=0.6)
     p.xgrid.grid_line_color = None
     p.ygrid.grid_line_color = None
     p.xaxis.axis_label_text_font_size = "20pt"
@@ -176,8 +200,8 @@ def generate_result(fits, x_axis_label, y_axis_label):
     ####### create widgets
     data = dict(
             x=x,
-            y=np.round(y,3),
-            y_predict=np.round(pred_y,3),
+            y=y,
+            y_predict=pred_y,
         )
     source = ColumnDataSource(data)
     columns = [

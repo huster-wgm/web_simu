@@ -25,26 +25,19 @@ def result(request):
         return render(request, 'simulator/empty_result.html')
     else:
         try:
-            # upload data
-            up_file=request.FILES["upfile"]
-            # verified upload file format
-            if not up_file.name.endswith('.csv'):
-                print ("step 2")
-                raise NameError
-            else:
-                df=pd.read_csv(up_file,header=None)
-                print ("step 3")
-                #number of NAN 
-                null_rows=sum(df.iloc[:,-1].isnull())
-                null_cols=sum(df.iloc[-1,:].isnull())
-                print ("step 4")
-                # remove NAN and header
-                df=df.iloc[null_rows+1:,null_cols:]
-                print ("step 5")
-                # assign values to x and y
-                x=np.array(df.iloc[:,0].values,dtype="int8")
-                y=np.array(df.iloc[:,1].values,dtype="float32")
-                print ("step 6")
+            file_address="https://docs.google.com/spreadsheets/d/1dKGnbgr0ld1Ny17b-vN81Rubt3_cwpqcT3-9V5QqbjE/pub?gid=0&single=true&output=csv"
+            df=pd.read_csv(file_address,header=None)
+            print ("step 3")
+            #number of NAN 
+            null_rows=sum(df.iloc[:,-1].isnull())
+            null_cols=sum(df.iloc[-1,:].isnull())
+            print ("step 4")
+            # remove NAN and header
+            df=df.iloc[null_rows+1:,null_cols:]
+            print ("step 5")
+            # assign values to x and y
+            x=np.array(df.iloc[:,0].values,dtype="int8")
+            y=np.array(df.iloc[:,1].values,dtype="float16")
             # type of regression function
             type_of_f=str(request.POST["types"])
             # fit to simulation object
@@ -62,12 +55,9 @@ def result(request):
                 fit=fit.all_regression()
             else:
                 raise ValueError 
-            # name of x_axis
-            x_axis=request.POST["x_axis"]
-            # name of y_axis
-            y_axis=request.POST["y_axis"]
+
             # generate result and write into 'simulator/result.html'
-            html=generate_result(fit, x_axis, y_axis)
+            html=generate_result(fit, request)
             return HttpResponse(html)
         except:
             return render(request, 'simulator/error.html')

@@ -69,25 +69,54 @@
   <div class="container">
 
     <form action="./result" method="post" enctype="multipart/form-data" >{% csrf_token %}
-      <fieldset class="scheduler-border">
-          <legend>Upload data </legend>
-          <label class="badge">Your Data:</label>
-          <input type="file" name="upfile" required>
+      <fieldset class="scheduler-border text-center" >
+          <legend>Edit data online  </legend>
+          <label class="badge">Replace with your personal data:</label> </br>
+          <iframe width='50%' height='60%' frameborder='0' 
+            src="https://docs.google.com/spreadsheets/d/1dKGnbgr0ld1Ny17b-vN81Rubt3_cwpqcT3-9V5QqbjE/edit?usp=sharing">
+          </iframe>
       </fieldset>
       <br/>
       <fieldset class="scheduler-border">
-          <legend>Sectect Parameters</legend>
-          <label class="badge">Type of function :</label>
-            <select class="form-control" name="types" required>
+          <legend>Setting Parameters</legend>
+          <label class="badge"> Set X_axis:</label>
+            <input type="text" name="x_axis" required><br>
+          <label class="badge"> Set Y_axis:</label>
+            <input type="text" name="y_axis" required><br>
+          <label class="badge"> Select type of function :</label>
+            <select class="form-control " name="types" required>
               <option value="1"><b>Linear function</b></option>
               <option value="2"><b>Polynomial function</b></option>
               <option value="3"><b>Sigmoid function</b></option>
               <option value="4"><b>Try three available function and return the best one!</b></option>
             </select>
-          <label class="badge">X_axis:</label>
-            <input type="text" name="x_axis" required><br>
-          <label class="badge">Y_axis:</label>
-            <input type="text" name="y_axis" required><br>
+          <label class="badge"> Select type of Marker :</label>
+            <select class="form-control " name="maker" required>
+              <option value="1"><b>Circle </b></option>
+              <option value="2"><b>Triangle </b></option>
+              <option value="3" selected><b>Square </b></option>
+              <option value="4"><b>Diamond </b></option>
+              <option value="5"><b>Asterisk </b></option>
+            </select>
+          <label class="badge"> Select color for Marker :</label>
+            <select class="form-control " name="marker_color" required>
+              <option value="purple"><b>Purple</b></option>
+              <option value="blue"><b>Blue</b></option>
+              <option value="green"><b>Green</b></option>
+              <option value="red"><b>Red</b></option>
+              <option value="navy" selected><b>Navy</b></option>
+              <option value="yellow"><b>Yellow</b></option>
+              <option value="black"><b>black</b></option>
+            </select>
+          <label class="badge"> Select color for Curve :</label>
+            <select class="form-control " name="curve_color" required>
+              <option value="green" selected><b>Green</b></option>
+              <option value="blue"><b>Blue</b></option>
+              <option value="red"><b>Red</b></option>
+              <option value="navy"><b>Navy</b></option>
+              <option value="yellow"><b>Yellow</b></option>
+              <option value="black"><b>black</b></option>
+            </select>
       </fieldset>
       <input type="submit" value="Submit"class="btn btn-primary">
     </form>

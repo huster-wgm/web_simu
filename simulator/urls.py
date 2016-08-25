@@ -10,5 +10,7 @@ urlpatterns=[
 	url(r'^tools$',views.tools,name="tools"),
 	# ex: /results
 	url(r'^result$',views.result,name="result"),
+    # ex: /forms
+    url(r'^forms$',views.forms,name="forms"),
 
 ]
