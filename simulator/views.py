@@ -19,22 +19,22 @@ def tools(request):
     return render(request, 'simulator/tools.html')
 
 def result(request):
-    print ("step 0")
     if request.method=="GET":
-        print ("step 1")
+        print ("request method == 'GET'")
         return render(request, 'simulator/empty_result.html')
     else:
         try:
             file_address="https://docs.google.com/spreadsheets/d/1dKGnbgr0ld1Ny17b-vN81Rubt3_cwpqcT3-9V5QqbjE/pub?gid=0&single=true&output=csv"
             df=pd.read_csv(file_address,header=None)
-            print ("step 3")
+            print ("step 0, pandas read_csv")
+            print (df)
             #number of NAN 
             null_rows=sum(df.iloc[:,-1].isnull())
             null_cols=sum(df.iloc[-1,:].isnull())
-            print ("step 4")
+            print ("step 1, %d null_rows, %d null_cols" %(null_rows,null_cols))
             # remove NAN and header
             df=df.iloc[null_rows+1:,null_cols:]
-            print ("step 5")
+            print ("step 2, removed header : \n",df)
             # assign values to x and y
             x=np.array(df.iloc[:,0].values,dtype="int8")
             y=np.array(df.iloc[:,1].values,dtype="float16")
@@ -42,7 +42,7 @@ def result(request):
             type_of_f=str(request.POST["types"])
             # fit to simulation object
             fit = fit_models(y,x)
-            print("step 7")
+            print("step 3, fitting")
             if type_of_f=="1":
                 # execute linear regression
                 fit.linear_regression()
