@@ -18,10 +18,10 @@ urlpatterns=[
 	url(r'^$',views.index,name="index"),
 	# ex: /blog/1
 	url(r'^post$',views.post,name="post"),
-    # ex: /blog/contact
+	# ex: /blog/contact
 	url(r'^contact$',views.contact,name="contact"),
-    # ex: /blog/about
+	# ex: /blog/about
 	url(r'^about$',views.about,name="about"),
-    url(r'^admin/', include(wagtailadmin_urls)),
-    url(r'^pages/', include(wagtail_urls)),
+	url(r'^admin/', include(wagtailadmin_urls)),
+	url(r'^pages/', include(wagtail_urls)),
 ]
