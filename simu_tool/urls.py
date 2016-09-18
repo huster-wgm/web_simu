@@ -19,12 +19,18 @@ from django.contrib import admin
 from . import views
 from django.conf import settings
 from django.conf.urls.static import static
+from wagtail.wagtailadmin import urls as wagtailadmin_urls
+from wagtail.wagtaildocs import urls as wagtaildocs_urls
+from wagtail.wagtailcore import urls as wagtail_urls
+
 
 urlpatterns = [
     url(r'^$', views.index, name='index'),
     # url(r'^admin/', admin.site.urls),
-    url(r'^polls/',include('polls.urls')),
     url(r'^blog/',include('blog.urls')),
-    url(r'^simulator/', include('simulator.urls')),	
+    url(r'^simulator/', include('simulator.urls')),
+    url(r'^blog/admin', include(wagtailadmin_urls)),
+    url(r'^blog/posts/', include(wagtail_urls)),
+
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

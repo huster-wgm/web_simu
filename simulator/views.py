@@ -24,8 +24,9 @@ def result(request):
         return render(request, 'simulator/empty_result.html')
     else:
         try:
-            file_address="https://docs.google.com/spreadsheets/d/1dKGnbgr0ld1Ny17b-vN81Rubt3_cwpqcT3-9V5QqbjE/pub?gid=0&single=true&output=csv"
-            df=pd.read_csv(file_address,header=None)
+            print("Start reading csv")
+            address="https://docs.google.com/spreadsheets/d/1dKGnbgr0ld1Ny17b-vN81Rubt3_cwpqcT3-9V5QqbjE/pub?gid=0&single=true&output=csv"
+            df=pd.read_csv(address,header=None)
             print ("step 0, pandas read_csv")
             print (df)
             #number of NAN 
