@@ -97,12 +97,8 @@ WSGI_APPLICATION = 'simu_tool.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'simu_blog',                      
-        'USER': 'simu_tool',
-        'PASSWORD': 'wgm919822161',
-        'HOST': 'localhost',                      # Empty for localhost through domain sockets or           '127.0.0.1' for localhost through TCP.
-        'PORT': '',      
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),               
     }
 }
 
