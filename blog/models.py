@@ -1,23 +1,22 @@
 from django.db import models
 
+from wagtail.wagtailsearch import index
+from wagtail.wagtailcore import blocks
 from wagtail.wagtailcore.models import Page
 from wagtail.wagtailcore.fields import RichTextField
-from wagtail.wagtailadmin.edit_handlers import FieldPanel
-from wagtail.wagtailimages.edit_handlers import ImageChooserPanel
-from wagtail.wagtailsearch import index
-
+from wagtail.wagtailcore.fields import StreamField
+from wagtail.wagtailadmin.edit_handlers import FieldPanel, StreamFieldPanel
+from wagtail.wagtailimages.blocks import ImageChooserBlock
 
 class Post(Page):
-    main_image = models.ForeignKey(
-        'wagtailimages.Image',
-        null=True,
-        blank=True,
-        on_delete=models.SET_NULL,
-        related_name='+'
-    )
     date = models.DateField("Post date")
     intro = models.CharField(max_length=250)
-    body = RichTextField(blank=True)
+    body = StreamField([
+        ('heading', blocks.CharBlock(classname="full title")),
+        ('paragraph', blocks.RichTextBlock()),
+        ('image', ImageChooserBlock()),
+        ('Html_code',blocks.RawHTMLBlock()),
+    ])
 
     search_fields = Page.search_fields + [
         index.SearchField('intro'),
@@ -26,7 +25,13 @@ class Post(Page):
 
     content_panels = Page.content_panels + [
         FieldPanel('date'),
-        ImageChooserPanel('main_image'),
         FieldPanel('intro'),
-        FieldPanel('body'),
+        StreamFieldPanel('body'),
+    ]
+
+class HomePage(Page):
+    intro = models.CharField(max_length=250)
+
+    content_panels = Page.content_panels + [
+        FieldPanel('intro'),
     ]

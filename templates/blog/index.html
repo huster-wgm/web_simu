@@ -1,5 +1,5 @@
 {% load static %}
-
+{% load wagtailcore_tags %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -51,7 +51,7 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
                     <li class="active">
-                        <a href="" >Home</a>
+                        <a href="." >Home</a>
                     </li>
                     <li>
                         <a href="about">About</a>
@@ -73,9 +73,9 @@
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                     <div class="site-heading">
-                        <h1>Clean Blog</h1>
+                        <h1>Lucky goes with hard work! </h1>
                         <hr class="small">
-                        <span class="subheading">A Clean Blog Theme by Start Bootstrap</span>
+                        <span class="subheading">A small personal blog using Bootstrap</span>
                     </div>
                 </div>
             </div>
@@ -83,35 +83,38 @@
     </header>
 
 
-    {% if latest_posts %}
+    
         <!-- Main Content -->
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                     <div class="post-preview">
-                    {% for post in latest_posts %}
-                        <a href="/posts/{{ post.title }}">
-                            <h2 class="post-title">
-                                {{ post.title }}
-                            </h2>
-                            <h3 class="post-subtitle">
-                                {{ post.intro }}
-                            </h3>
-                        </a>
-                        <p class="post-meta">Posted by <a href="#">HUSTER-WGM</a> {{ post.date }}</p>
-                    {% endfor %}
-                        <li class="next">
-                            <a href="#">Older Posts &rarr;</a>
+                    {% if latest_posts %}
+                        {% for post in latest_posts %}
+                            <a href="{% pageurl post %}">
+                                <h2 class="post-title">
+                                    {{ post.title }}
+                                </h2>
+                                <h3 class="post-subtitle">
+                                    {{ post.intro }}
+                                </h3>
+                            </a>
+                            <p class="post-meta">Posted by <a href="#">HUSTER-WGM</a> {{ post.date }}</p>
+                        {% endfor %}
+                            <li class="next">
+                                <a href="#">Older Posts &rarr;</a>
+                    {% else %}  
+                            <p>No posts are available.</p>
+                    {% endif %}          
                         </li>
                     </div>
                 </div>
             </div>
         </div>
 
-    {% else %}
+    
 
-        <p>No posts are available.</p>
-    {% endif %}
+
 
     <!-- Footer -->
     <footer>
@@ -128,10 +131,10 @@
                             </a>
                         </li>
                         <li>
-                            <a href=".">
+                            <a href="https://www.facebook.com/profile.php?id=100013306328999">
                                 <span class="fa-stack fa-lg">
                                     <i class="fa fa-circle fa-stack-2x"></i>
-                                    <i class="fa fa-wechat fa-stack-1x fa-inverse"></i>
+                                    <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
                                 </span>
                             </a>
                         </li>
