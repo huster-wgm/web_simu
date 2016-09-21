@@ -3,7 +3,6 @@ venv
 staticfiles
 mediafiles
 __pycache__
-migrations
 .DS_Store
 *.txt~
 .env
