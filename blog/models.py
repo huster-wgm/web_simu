@@ -7,9 +7,18 @@ from wagtail.wagtailcore.fields import RichTextField
 from wagtail.wagtailcore.fields import StreamField
 from wagtail.wagtailadmin.edit_handlers import FieldPanel, StreamFieldPanel
 from wagtail.wagtailimages.blocks import ImageChooserBlock
+from modelcluster.fields import ParentalKey
+from modelcluster.contrib.taggit import ClusterTaggableManager
+from taggit.models import TaggedItemBase
+
+class PageTag(TaggedItemBase):
+    content_object = ParentalKey('blog.Post', related_name='tagged_items')
+
 
 class Post(Page):
-    date = models.DateField("Post date")
+    tags = ClusterTaggableManager(through=PageTag, blank=True)
+
+
     intro = models.CharField(max_length=250)
     body = StreamField([
         ('heading', blocks.CharBlock(classname="full title")),
@@ -24,9 +33,12 @@ class Post(Page):
     ]
 
     content_panels = Page.content_panels + [
-        FieldPanel('date'),
         FieldPanel('intro'),
         StreamFieldPanel('body'),
+    ]
+
+    promote_panels = Page.promote_panels + [
+        FieldPanel('tags'),
     ]
 
 class HomePage(Page):

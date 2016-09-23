@@ -104,7 +104,17 @@
                                 </h3>
                             </a>
                             <p class="post-meta">Posted by <a href="#">HUSTER-WGM</a> {{ post.first_published_at }}</p>
-                        {% endfor %}
+                            
+                            <!-- this part is for displaying tags>
+                            <ul class="tags">
+                                {% for tag in post.tags.all %}
+                                <li><a href="#" class="tag">{{ tag }}</a></li>
+                                {% endfor %}
+
+                            </ul>
+                            <!-->
+
+                        {% endfor %}  
                             <li class="next">
                                 <a href="#">Older Posts &rarr;</a>
                     {% else %}  
