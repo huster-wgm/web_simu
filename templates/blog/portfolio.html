@@ -11,7 +11,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>blog-contact</title>
+    <title>blog-portfolio</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
@@ -53,14 +53,14 @@
                     <li >
                         <a href="." >Home</a>
                     </li>
-                    <li>
+                    <li >
                         <a href="archives">Archives</a>
                     </li>
-                    <li>
-                        <a href="portfolio">Portfolio</a>
-                    </li>
                     <li class="active">
-                        <a href="">Contact</a>
+                        <a href="">Portfolio</a>
+                    </li>
+                    <li>
+                        <a href="contact">Contact</a>
                     </li>
                 </ul>
             </div>
@@ -71,68 +71,48 @@
 
     <!-- Page Header -->
     <!-- Set your background image for this header on the line below. -->
-    <header class="intro-header blog_contact_bg" >
+    <header class="intro-header blog_portfolio_bg" >
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                     <div class="page-heading">
-                        <h1>Contact Me</h1>
-                        <hr class="small">
-                        <span class="subheading">Have questions? I have answers (maybe).</span>
+                        <h1>Portfolios</h1>
+                        <hr class="Small">
+                        <span class="subheading">Small but useful tools for fun !</span>
                     </div>
                 </div>
             </div>
         </div>
     </header>
 
-    <!-- Main Content -->
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                <p>Want to get in touch with me? Fill out the form below to send me a message and I will try to get back to you within 24 hours!</p>
-                <!-- Contact Form - Enter your email address on line 19 of the mail/contact_me.php file to make this form work. -->
-                <!-- WARNING: Some web hosts do not allow emails to be sent through forms to common mail hosts like Gmail or Yahoo. It's recommended that you use a private domain email address! -->
-                <!-- NOTE: To use the contact form, your site must be on a live web host with PHP! The form will not work locally! -->
-                <form name="sentMessage" id="contactForm" novalidate>
-                    <div class="row control-group">
-                        <div class="form-group col-xs-12 floating-label-form-group controls">
-                            <label>Name</label>
-                            <input type="text" class="form-control" placeholder="Name" id="name" required data-validation-required-message="Please enter your name.">
-                            <p class="help-block text-danger"></p>
-                        </div>
-                    </div>
-                    <div class="row control-group">
-                        <div class="form-group col-xs-12 floating-label-form-group controls">
-                            <label>Email Address</label>
-                            <input type="email" class="form-control" placeholder="Email Address" id="email" required data-validation-required-message="Please enter your email address.">
-                            <p class="help-block text-danger"></p>
-                        </div>
-                    </div>
-                    <div class="row control-group">
-                        <div class="form-group col-xs-12 floating-label-form-group controls">
-                            <label>Phone Number</label>
-                            <input type="tel" class="form-control" placeholder="Phone Number" id="phone" required data-validation-required-message="Please enter your phone number.">
-                            <p class="help-block text-danger"></p>
-                        </div>
-                    </div>
-                    <div class="row control-group">
-                        <div class="form-group col-xs-12 floating-label-form-group controls">
-                            <label>Message</label>
-                            <textarea rows="5" class="form-control" placeholder="Message" id="message" required data-validation-required-message="Please enter a message."></textarea>
-                            <p class="help-block text-danger"></p>
-                        </div>
-                    </div>
-                    <br>
-                    <div id="success"></div>
-                    <div class="row">
-                        <div class="form-group col-xs-12">
-                            <button type="submit" class="btn btn-default">Send</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
+    <!-- Main jumbotron for a primary marketing message or call to action -->
+    <div class="jumbotron">
+      <div class="container">
+        <h1>Hello, world!</h1>
+        <p>This is a personal web page including some useful tools. </p>
+        <p>Up to now, there are two tools.
+           First of them is polls which is build by Django as demo.
+           Second one is a simulator which can perform regression based on user provided data.     
+        </p>
+        <p><a class="btn btn-primary btn-lg" href="#" role="button">Have Fun! </a></p>
+      </div>
     </div>
+
+    <div class="container">
+      <!-- Example row of columns -->
+      <div class="row">
+          <div class="col-md-6">
+          <h1>Blog</h1>
+          <p><font size="5px">Personal blog for sharing.</font></p>
+          <p><a class="btn btn-default" href="." role="button">View details &raquo;</a></p>
+        </div>
+        <div class="col-md-6">
+          <h1>Simulator</h1>
+          <p><font size="5px">An online simulation tool for linear, polynomial or sigmoid regression.</font></p>
+          <p><a class="btn btn-default" href="../simulator" role="button">View details &raquo;</a></p>
+        </div>
+
+      </div>
 
     <hr>
 

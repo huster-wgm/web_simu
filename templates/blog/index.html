@@ -1,5 +1,6 @@
 {% load static %}
 {% load wagtailcore_tags %}
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -54,7 +55,10 @@
                         <a href="." >Home</a>
                     </li>
                     <li>
-                        <a href="about">About</a>
+                        <a href="archives">Archives</a>
+                    </li>
+                    <li>
+                        <a href="portfolio">Portfolio</a>
                     </li>
                     <li>
                         <a href="contact">Contact</a>
@@ -99,7 +103,7 @@
                                     {{ post.intro }}
                                 </h3>
                             </a>
-                            <p class="post-meta">Posted by <a href="#">HUSTER-WGM</a> {{ post.date }}</p>
+                            <p class="post-meta">Posted by <a href="#">HUSTER-WGM</a> {{ post.first_published_at }}</p>
                         {% endfor %}
                             <li class="next">
                                 <a href="#">Older Posts &rarr;</a>

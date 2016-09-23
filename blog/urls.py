@@ -5,7 +5,7 @@ Created on Thu Aug 25 21:42:28 2016
 @author: husterwgm
 """
 
-from django.conf.urls import url,include
+from django.conf.urls import url
 from . import views
 
 
@@ -16,6 +16,8 @@ urlpatterns=[
 	url(r'^$',views.index,name="index"),
 	# ex: /blog/contact
 	url(r'^contact$',views.contact,name="contact"),
-	# ex: /blog/about
-	url(r'^about$',views.about,name="about"),	
+	# ex: /blog/archives
+	url(r'^archives$',views.archives,name="archives"),
+	# ex: /blog/portfolio
+	url(r'^portfolio$',views.portfolio,name="portfolio"),
 ]

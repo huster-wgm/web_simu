@@ -25,12 +25,10 @@ from wagtail.wagtailcore import urls as wagtail_urls
 
 
 urlpatterns = [
-    url(r'^$', views.index, name='index'),
-    # url(r'^admin/', admin.site.urls),
-    url(r'^blog/',include('blog.urls')),
+    url(r'^',include('blog.urls')),
     url(r'^simulator/', include('simulator.urls')),
-    url(r'^blog/admin', include(wagtailadmin_urls)),
-    url(r'^blog/posts/', include(wagtail_urls)),
+    url(r'^admin', include(wagtailadmin_urls)),
+    url(r'^posts/', include(wagtail_urls)),
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

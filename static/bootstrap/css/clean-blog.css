@@ -402,11 +402,14 @@ body {
 .blog_index_bg{
   background-image:url("../../img/home-bg.jpg");
 }
-.blog_about_bg{
-  background-image:url("../../img/about-bg.jpg");
+.blog_archives_bg{
+  background-image:url("../../img/archives-bg.jpg");
 }
 .blog_post_bg{
   background-image:url("../../img/post-bg.jpg");
+}
+.blog_portfolio_bg{
+  background-image:url("../../img/portfolio-bg.jpg");
 }
 .blog_contact_bg{
   background-image:url("../../img/contact-bg.jpg");
