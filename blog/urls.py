@@ -16,8 +16,8 @@ urlpatterns=[
 	url(r'^$',views.index,name="index"),
 	# ex: /blog/contact
 	url(r'^contact$',views.contact,name="contact"),
-	# ex: /blog/archives
-	url(r'^archives$',views.archives,name="archives"),
+	# ex: /blog/categories
+	url(r'^categories$',views.categories,name="categories"),
 	# ex: /blog/portfolio
 	url(r'^portfolio$',views.portfolio,name="portfolio"),
 ]

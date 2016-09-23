@@ -9,9 +9,9 @@ def index(request):
     context = {'latest_posts': latest_posts}
     return render(request, 'blog/index.html',context)
     
-def archives(request):    
+def categories(request):    
     
-    return render(request, 'blog/archives.html')
+    return render(request, 'blog/categories.html')
     
 def portfolio(request):
     return render(request, 'blog/portfolio.html')

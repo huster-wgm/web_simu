@@ -402,8 +402,8 @@ body {
 .blog_index_bg{
   background-image:url("../../img/home-bg.jpg");
 }
-.blog_archives_bg{
-  background-image:url("../../img/archives-bg.jpg");
+.blog_categories_bg{
+  background-image:url("../../img/categories-bg.jpg");
 }
 .blog_post_bg{
   background-image:url("../../img/post-bg.jpg");
