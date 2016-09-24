@@ -11572,21 +11572,3 @@ ul.typeahead-list > li > a {
 }
 /*# sourceMappingURL=style.min.css.map */
 
-/*# for embeding */
-.responsive-object {
-  position: relative;
-  padding-bottom: 67.5%;
-  height: 0;
-  margin: 10px 0;
-  overflow: hidden;
-}
-.responsive-object iframe,
-  .responsive-object object,
-  .responsive-object embed {
-    position: absolute;
-    top: 0;
-    padding-left: 10%;
-    left: 0;
-    width: 90%;
-    height: 90%;
-}
