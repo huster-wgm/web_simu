@@ -24,6 +24,7 @@
     <link href="{% static 'bootstrap/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
     <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+    
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -99,20 +100,13 @@
                                 <h2 class="post-title">
                                     {{ post.title }}
                                 </h2>
-                                <h3 class="post-subtitle">
-                                    {{ post.intro }}
-                                </h3>
+                                <span class="glyphicon glyphicon-tags" style="color: #2FA97A"></span>
+                                    {% for tag in post.tags.all %}
+                                    <a href="#" style="font-style: italic;color: #2FA97A;margin-left: 10px;font-size: 24px; "> {{ tag }} </a>
+                                    {% endfor %}
                             </a>
                             <p class="post-meta">Posted by <a href="#">HUSTER-WGM</a> {{ post.first_published_at }}</p>
                             
-                            <!-- this part is for displaying tags>
-                            <ul class="tags">
-                                {% for tag in post.tags.all %}
-                                <li><a href="#" class="tag">{{ tag }}</a></li>
-                                {% endfor %}
-
-                            </ul>
-                            <!-->
 
                         {% endfor %}  
                             <li class="next">

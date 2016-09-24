@@ -85,7 +85,9 @@
                     <div class="post-heading">
                         <h1>{{ page.title }}</h1>
                         <h2 class="subheading">{{ page.intro }}</h2>
-                        <span class="meta">Posted by <a href="#">HUSTER-WGM</a> {{page.date}}</span>
+                        <span class="meta">
+                            Posted by <a href="#">HUSTER-WGM</a> {{page.first_published_at}}    
+                        </span>
                     </div>
                 </div>
             </div>
@@ -94,7 +96,7 @@
 
     <!-- Post Content -->
     <article>
-        <div class="container">
+        <div class="container" style="padding-left: 10%">
                 
         {% include_block page.body %}
 
