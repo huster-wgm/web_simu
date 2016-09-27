@@ -1,8 +1,0 @@
-venv
-*.pyc
-staticfiles
-mediafiles
-__pycache__
-.DS_Store
-*.txt~
-.env
