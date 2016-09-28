@@ -94,8 +94,8 @@
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                     <div class="post-preview">
-                    {% if latest_posts %}
-                        {% for post in latest_posts %}
+                    {% if post_list %}
+                        {% for post in post_list %}
                             <a href="{% pageurl post %}">
                                 <h2 class="post-title">
                                     {{ post.title }}
@@ -106,15 +106,28 @@
                                     {% endfor %}
                             </a>
                             <p class="post-meta">Posted by <a href="#">HUSTER-WGM</a> {{ post.first_published_at }}</p>
-                            
+                        {% endfor %}
+                    </div>
+                    <div class="row col-lg-8 ">
+                    <!-- Pager -->
+                    <ul class="pager">
+                        {% if post_list.object_list and post_list.paginator.num_pages > 1 %}
+                            {% if post_list.has_previous %}
+                            <li class="prev">
+                                <a href="?page={{ post_list.previous_page_number }}">&laquo; Prev Posts</a>
+                            </li>
+                            {% endif %}
 
-                        {% endfor %}  
+                            {% if post_list.has_next %}
                             <li class="next">
-                                <a href="#">Older Posts &rarr;</a>
+                                <a href="?page={{ post_list.next_page_number }}">Next Posts &raquo;</a>
+                            </li>
+                            {% endif %}
+                    </ul>      
+                        {% endif %}
                     {% else %}  
                             <p>No posts are available.</p>
                     {% endif %}          
-                        </li>
                     </div>
                 </div>
             </div>
