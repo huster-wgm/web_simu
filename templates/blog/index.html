@@ -105,7 +105,8 @@
                                     <a href="#" style="font-style: italic;color: #2FA97A;margin-left: 10px;font-size: 24px; "> {{ tag }} </a>
                                     {% endfor %}
                             </a>
-                            <p class="post-meta">Posted by <a href="#">HUSTER-WGM</a> {{ post.first_published_at }}</p>
+                            <p class="post-meta">Posted by <a href="#">HUSTER-WGM</a> {{post.first_published_at |date:"M. d, Y" }}</p>
+                            <hr>
                         {% endfor %}
                     </div>
                     <div class="row col-lg-8 ">
@@ -114,13 +115,13 @@
                         {% if post_list.object_list and post_list.paginator.num_pages > 1 %}
                             {% if post_list.has_previous %}
                             <li class="prev">
-                                <a href="?page={{ post_list.previous_page_number }}">&laquo; Prev Posts</a>
+                                <a href="?page={{ post_list.previous_page_number }}">&#8689; Prev Posts</a>
                             </li>
                             {% endif %}
 
                             {% if post_list.has_next %}
                             <li class="next">
-                                <a href="?page={{ post_list.next_page_number }}">Next Posts &raquo;</a>
+                                <a href="?page={{ post_list.next_page_number }}">Next Posts &#8690;</a>
                             </li>
                             {% endif %}
                     </ul>      

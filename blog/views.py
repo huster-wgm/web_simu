@@ -1,7 +1,7 @@
 from django.shortcuts import render,get_object_or_404
 from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse
-from .models import Post
+from .models import Post,PageTag
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 def index(request):
@@ -18,9 +18,15 @@ def index(request):
     return render(request, 'blog/index.html',context)
     
 def categories(request):    
-    
-    return render(request, 'blog/categories.html')
-    
+    posts = Post.objects.live().all()
+    context = {'posts': posts}
+    return render(request, 'blog/categories.html',context)
+
+def tags_view(request,tag):
+    posts = Post.objects.live().filter(tags=tag)
+    context = {'posts': posts}
+    return render(request, 'blog/categories.html',context)	
+
 def portfolio(request):
     return render(request, 'blog/portfolio.html')
     
