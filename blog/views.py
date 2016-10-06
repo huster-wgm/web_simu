@@ -18,14 +18,18 @@ def index(request):
     return render(request, 'blog/index.html',context)
     
 def categories(request):    
-    posts = Post.objects.live().all()
+    tag = 'CV'
+    if tag:
+        posts = Post.objects.live().filter(tags__name=tag)
     context = {'posts': posts}
     return render(request, 'blog/categories.html',context)
 
-def tags_view(request,tag):
-    posts = Post.objects.live().filter(tags=tag)
+def tags_view(request):
+    tag = request.GET.get('tag')
+    if tag:
+        posts = Post.filter(tags__name=tag)
     context = {'posts': posts}
-    return render(request, 'blog/categories.html',context)	
+    return render(request, 'blog/categories.html',context)
 
 def portfolio(request):
     return render(request, 'blog/portfolio.html')
