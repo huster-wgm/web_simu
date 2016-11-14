@@ -4,21 +4,28 @@ from django.http import HttpResponse
 import pandas as pd
 import numpy as np
 
+
 def file_format(request,file):
     file_name=str(file)
     if not file_name.endswith('.csv'):
         return render(request, 'simulator/error.html')
+
 def forms(request):
     return render(request, 'simulator/forms.html')
 
-# Create your views here.
-def home(request):
-    return render(request, 'simulator/home.html')
+def bio_calculator(request):
+    return render(request, 'simulator/bio_calculators.html')
 
-def tools(request):
-    return render(request, 'simulator/tools.html')
+# return result of bio_calculators
+def bio_result(request):
+    request.POST["types"]
+    return render(request, 'simulator/bio_calculators.html')
 
-def result(request):
+def simulator(request):
+    return render(request, 'simulator/simulator.html')
+
+# return result of simulator   
+def simu_result(request):
     if request.method=="GET":
         print ("request method == 'GET'")
         return render(request, 'simulator/empty_result.html')

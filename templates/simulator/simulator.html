@@ -8,7 +8,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>tools</title>
+    <title>Simulator</title>
 
     <!-- Bootstrap core CSS -->
     <link href="{% static 'bootstrap/css/bootstrap.min.css'  %}"rel="stylesheet">
@@ -44,9 +44,8 @@
               <a class="navbar-brand" href="#"><b>Simulator</b></a>
               <div id="navbar" class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                  <li><a href=".">Home</a></li>
-                  <li class="active"><a href="">Tools</a></li>
-                  <li><a href="./result">Results</a></li>
+                  <li><a href="../../portfolio">Portfolios</a></li>
+                  <li class="active"><a href="">Simulator</a></li>
                 </ul>
               </div>
             </div>
@@ -55,20 +54,19 @@
       </div>
     </div>
   
-  <div class="container " style="padding:20px">
-    <br/>
-    <br/>
-    <br/>
-    <br/>
-    <br/>
-    <br/>
-    <br/>
-    <br/>
-  </div>
+    <br>
+    <br>
+    <div class="container">
+        <div  class="col-lg-4">
+           <h1><b>Introduction</b></h1>
+            <p>This is a simple tool for basic simulation task.</br>Currently, it support linear,
+              polynomial and sigmoid funtion.
+            </p>
+       </div>
+    </div>
+    <div class="container">
 
-  <div class="container">
-
-    <form action="./result" method="post" enctype="multipart/form-data" >{% csrf_token %}
+    <form action="./simu_result" method="post" enctype="multipart/form-data" >{% csrf_token %}
       <fieldset class="scheduler-border text-center" >
           <legend>Edit data online  </legend>
           <label class="badge">Replace with your personal data:</label> </br>
