@@ -1,4 +1,5 @@
 from .simu import fit_models,generate_result
+from .bio_calc import Bio_calculator
 from django.shortcuts import render
 from django.http import HttpResponse
 import pandas as pd
@@ -12,14 +13,6 @@ def file_format(request,file):
 
 def forms(request):
     return render(request, 'simulator/forms.html')
-
-def bio_calculator(request):
-    return render(request, 'simulator/bio_calculators.html')
-
-# return result of bio_calculators
-def bio_result(request):
-    request.POST["types"]
-    return render(request, 'simulator/bio_calculators.html')
 
 def simulator(request):
     return render(request, 'simulator/simulator.html')
@@ -70,3 +63,33 @@ def simu_result(request):
         except:
             return render(request, 'simulator/error.html')
 
+
+def bio_calculator(request):
+    return render(request, 'simulator/bio_calculators.html')
+
+# return result of bio_calculators
+def bio_result(request):
+    # using DNA calculator
+    if request.POST['seq']:
+        seq_type = request.POST["seq_type"]
+        seq = request.POST['seq']
+        # create calculator objects
+        calc = Bio_calculator(seq, seq_type)
+
+
+    # using Protein concentration calculator
+    else:
+        seq_type = request.POST["seq_type_2"]
+        seq = request.POST['seq_2']
+        # create calculator objects
+        calc = Bio_calculator(seq, seq_type)        
+        width = float(request.POST['width'])
+        a_280 = float(request.POST['a_280'])
+        dilution = float(request.POST['dilution'])
+        
+    calc.DNA_calculator()
+    calc.Protein_calculator()
+    if width :
+        calc.Protein_con(width, a_280, dilution)      
+    context = {'calc': calc}
+    return render(request, 'simulator/calc_result.html',context)

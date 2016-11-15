@@ -8,7 +8,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Bio-calculators</title>
+    <title>Bio-Results</title>
 
     <!-- Bootstrap core CSS -->
     <link href="{% static 'bootstrap/css/bootstrap.min.css'  %}"rel="stylesheet">
@@ -45,7 +45,8 @@
               <div id="navbar" class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                   <li><a href="../../portfolio">Portfolios</a></li>
-                  <li class="active"><a href="">Bio-calculators</a></li>
+                  <li><a href="../simulator/bio_calculator">Bio-calculators</a></li>
+                  <li class="active"><a href="">Results</a></li>
                 </ul>
               </div>
             </div>
@@ -53,48 +54,61 @@
         </nav>
       </div>
     </div>
-  
+
+    <br>
     <br>
     <br>
     <div class="container">
-        <div  class="col-lg-4">
-           <h1><b>Introduction</b></h1>
-            <p>Simple tool for DNA/Protein calculation.
-            </p>
-       </div>
+      <div class ='row'>
+        <div class="col-lg-8" >
+          <h1>Results</h1>
+        </div>
+      </div>
     </div>
 
-  <div class="container">
 
-    <form action="./bio_result" method="post" enctype="multipart/form-data" >{% csrf_token %}
-      <fieldset class="scheduler-border" >
-          <legend> DNA calculators</legend>
-          <label class="badge">Type of Sequence:</label> 
-          <select name="seq_type" >
-            <option value="DNA"><b>DNA Sequence</b></option>
-            <option value="Protein"><b>Protein Sequence</b></option>
-          </select>
-          <textarea type ='text' name='seq' class="form-control" rows="4" placeholder="Your Sequence(Make sure they are capital letters!)"></textarea>  
-      </fieldset>
-      <input type="submit" value="Submit"class="btn btn-primary">
-      <br/>
+
+    <div class="container">
+      {% if calc.seq_type == 'DNA' %}
+          <fieldset class="scheduler-border">
+              <legend> <h1>DNA Imformation</h1></legend>
+              <h3><b>DNA Sequence :</b></h3>
+                  <textarea class="form-control" rows="4">{{ calc.dna_seq }}</textarea>
+              <h3><b>DNA length :</b></h3>
+                  <p>{{ calc.dna_len }} bp</p> 
+              <h3><b>DNA molecular weight :</b></h3>
+                  <p>{{ calc.dna_mw }} g/mol </p> 
+              <h3><b>DNA GC_ratio :</b></h3>
+                  <p>{{ calc.gc_rate }} % </p> 
+              <h3><b>Number of Stop codon :</b></h3>
+                  <p>{{ calc.nb_stop }} </p> 
+          </fieldset>
+          <br/>
+          <br>
+      {% endif %}
      <fieldset class="scheduler-border">
-          <legend> Protein calculators</legend>
-          <label class="badge">Type of Sequence:</label> 
-          <select name="seq_type_2" >
-            <option value="DNA"><b>DNA Sequence</b></option>
-            <option value="Protein"><b>Protein Sequence</b></option>
-          </select>
-          <textarea type ='text' name='seq_2' class="form-control" rows="4" placeholder="Your Sequence(Make sure they are capital letters!)"></textarea>            
-          <label class="badge"> Length of Path :</label>
-            <input type="text" name="width"> <b>unit in /cm </b> <br>
-          <label class="badge"> A280 </label>
-            <input type="text" name="a_280"> <br>
-          <label class="badge"> Dilution factors </label>
-            <input type="text" name="dilution"> <br>            
-          <input type="submit" value="Submit"class="btn btn-primary">
-    </form>
-  </div>
+          <legend> <h1>Protein Information</h1></legend>
+          <h3><b>Protein sequence (* for Stop codon) :</b></h3>
+              <textarea class="form-control" rows="4">{{ calc.aa_seq }}</textarea>
+          <h3><b> Amino_acid length (- Stop codon) :</b></h3>
+              <p>{{ calc.aa_len }} aa </p>
+          <h3><b>Protein molecular weight :</b></h3>
+              <p>{{ calc.aa_mw }} g/mol </p> 
+          <h3><b>Protein absorbance coefficence :</b></h3>
+              <p>{{ calc.abs_coeff }} /(M*cm) </p> 
+          <h3><b>Amino acid components :</b></h3>
+              <p>{{ calc.aa_components }} </p> 
+        {% if calc.measure %}
+          <h3><b> Dilution factor :</b></h3>
+              <p>{{ calc.dilution }} </p> 
+          <h3><b>Protein concentration :</b></h3>
+              <p>{{ calc.molar_con }}  μM/L </p> 
+              </b>
+              <p>{{ calc.pro_con }}  mg/ml</p>         
+        {% endif %}                             
+    </div>
+  
+  
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
