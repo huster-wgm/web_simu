@@ -73,14 +73,16 @@ def bio_result(request):
     if request.POST['seq']:
         seq_type = request.POST["seq_type"]
         seq = request.POST['seq']
+        measure_con = False
         # create calculator objects
         calc = Bio_calculator(seq, seq_type)
-
+        
 
     # using Protein concentration calculator
     else:
         seq_type = request.POST["seq_type_2"]
         seq = request.POST['seq_2']
+        measure_con = True
         # create calculator objects
         calc = Bio_calculator(seq, seq_type)        
         width = float(request.POST['width'])
@@ -89,7 +91,7 @@ def bio_result(request):
         
     calc.DNA_calculator()
     calc.Protein_calculator()
-    if width :
+    if measure_con:
         calc.Protein_con(width, a_280, dilution)      
     context = {'calc': calc}
     return render(request, 'simulator/calc_result.html',context)
