@@ -189,7 +189,9 @@ class Bio_calculator():
         self.aa_mw = aa_mw
         self.aa_components = aa_components
         self.abs_coeff = abs_coeff
+        # Record number of important Amino acid
         self.nb_stop = aa_components['*']
+        self.nb_met = aa_components['M']
         return 0
 
     def Protein_con(self, width, a_280, dilution):

@@ -96,8 +96,10 @@
               <p>{{ calc.aa_mw }} g/mol </p> 
           <h3><b>Protein absorbance coefficence :</b></h3>
               <p>{{ calc.abs_coeff }} /(M*cm) </p> 
-          <h3><b>Amino acid components :</b></h3>
-              <p>{{ calc.aa_components }} </p> 
+          <h3><b>Total number of Met :</b></h3>
+              <p>{{ calc.nb_met }}  </p>     
+          <h3><b>All Amino acid components :</b></h3>
+              <textarea class="form-control" rows="2" style="font-size:20px">{{ calc.aa_components }}</textarea> 
         {% if calc.measure %}
           <h3><b> Dilution factor :</b></h3>
               <p>{{ calc.dilution }} </p> 

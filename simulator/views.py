@@ -94,4 +94,5 @@ def bio_result(request):
     if measure_con:
         calc.Protein_con(width, a_280, dilution)      
     context = {'calc': calc}
+    print ('number of Met',calc.aa_components['M'])
     return render(request, 'simulator/calc_result.html',context)
