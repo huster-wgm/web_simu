@@ -72,10 +72,14 @@
             <option value="DNA"><b>DNA Sequence</b></option>
             <option value="Protein"><b>Protein Sequence</b></option>
           </select>
-          <textarea type ='text' name='seq' class="form-control" rows="4" placeholder="Your Sequence(Make sure they are capital letters!)"></textarea>  
-      </fieldset>
-      <input type="submit" value="Submit"class="btn btn-primary">
-      <br/>
+          <br>
+          <textarea type ='text' name='seq' class="form-control" rows="4" placeholder="Your Sequence(Make sure they are capital letters!)" required ></textarea>  <br>
+          <input type="submit" name ='submit' value="DNA_Calc" class="btn btn-primary">
+      </fieldset>  
+    </form>
+
+    <form action="./bio_result" method="post" enctype="multipart/form-data" >{% csrf_token %}
+    
      <fieldset class="scheduler-border">
           <legend> Protein calculators</legend>
           <label class="badge">Type of Sequence:</label> 
@@ -83,14 +87,15 @@
             <option value="DNA"><b>DNA Sequence</b></option>
             <option value="Protein"><b>Protein Sequence</b></option>
           </select>
-          <textarea type ='text' name='seq_2' class="form-control" rows="4" placeholder="Your Sequence(Make sure they are capital letters!)"></textarea>            
+          <br>
+          <textarea type ='text' name='seq_2' class="form-control" rows="4" placeholder="Your Sequence(Make sure they are capital letters!)" required></textarea>   <br>         
           <label class="badge"> Length of Path :</label>
-            <input type="text" name="width"> <b>unit in /cm </b> <br>
+            <input type="text" name="width" required> <b>unit in /cm </b> <br>
           <label class="badge"> A280 </label>
-            <input type="text" name="a_280"> <br>
+            <input type="text" name="a_280" required> <br>
           <label class="badge"> Dilution factors </label>
-            <input type="text" name="dilution"> <br>            
-          <input type="submit" value="Submit"class="btn btn-primary">
+            <input type="text" name="dilution" required> <br>            
+          <input type="submit" name ='submit' value="Protein_Calc" class="btn btn-primary">
     </form>
   </div>
     <!-- Bootstrap core JavaScript

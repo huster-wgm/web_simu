@@ -70,7 +70,7 @@ def bio_calculator(request):
 # return result of bio_calculators
 def bio_result(request):
     # using DNA calculator
-    if request.POST['seq']:
+    if request.POST['submit']=='DNA_Calc':
         seq_type = request.POST["seq_type"]
         seq = request.POST['seq']
         measure_con = False
@@ -94,5 +94,4 @@ def bio_result(request):
     if measure_con:
         calc.Protein_con(width, a_280, dilution)      
     context = {'calc': calc}
-    print ('number of Met',calc.aa_components['M'])
     return render(request, 'simulator/calc_result.html',context)
