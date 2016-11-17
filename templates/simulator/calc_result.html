@@ -74,6 +74,10 @@
               <legend> <h1>DNA Imformation</h1></legend>
               <h3><b>DNA Sequence :</b></h3>
                   <textarea class="form-control" rows="4">{{ calc.dna_seq }}</textarea>
+            {% if calc.optimized %} 
+              <h3><b>GC_Reduce DNA Sequence :</b></h3>
+                  <textarea class="form-control" rows="4">{{ calc.optimal_seq }}</textarea>   
+            {% endif %}      
               <h3><b>DNA length :</b></h3>
                   <p>{{ calc.dna_len }} bp</p> 
               <h3><b>DNA molecular weight :</b></h3>

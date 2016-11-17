@@ -72,6 +72,11 @@
             <option value="DNA"><b>DNA Sequence</b></option>
             <option value="Protein"><b>Protein Sequence</b></option>
           </select>
+          <label class="badge">Optimize Sequence:</label> 
+          <select name="gc_reduce" >
+            <option value="yes"><b>Reduce_GC</b></option>
+            <option value="no"><b>Don't optimize</b></option>
+          </select>
           <br>
           <textarea type ='text' name='seq' class="form-control" rows="4" placeholder="Your Sequence(Make sure they are capital letters!)" required ></textarea>  <br>
           <input type="submit" name ='submit' value="DNA_Calc" class="btn btn-primary">

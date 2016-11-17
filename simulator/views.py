@@ -92,6 +92,8 @@ def bio_result(request):
     calc.DNA_calculator()
     calc.Protein_calculator()
     if measure_con:
-        calc.Protein_con(width, a_280, dilution)      
+        calc.Protein_con(width, a_280, dilution)
+    if request.POST['gc_reduce'] == 'yes':
+        calc.Codon_optimize()    
     context = {'calc': calc}
     return render(request, 'simulator/calc_result.html',context)

@@ -25,7 +25,7 @@ aa_code_dict = {
                 'L': ['TTA', 'TTG', 'CTT', 'CTC', 'CTA', 'CTG'],
                 'K': ['AAA', 'AAG'],
                 'F': ['TTT', 'TTC'],
-                'P': [  'CCT', 'CCC', 'CCA', 'CCG'],
+                'P': ['CCT', 'CCC', 'CCA', 'CCG'],
                 'S': ['TCT', 'TCC', 'TCA', 'TCG', 'AGT', 'AGC'],
                 'T': ['ACT', 'ACC', 'ACA', 'ACG'],
                 'W': ['TGG'],
@@ -138,6 +138,31 @@ def Protein_components(seq):
     return aa_component, abs_coeff
 
 
+def reduce_gc(seq):
+    # input sequence shoud be amino acid sequence
+    # seq is a list
+    reduce_seq = ''
+    for aa in seq:
+        # if amino acid is not a stop codon
+        if aa != '*':
+            possible_codons = aa_code_dict[aa]
+            if len(possible_codons) > 1:
+                codon_gc = []
+                for codon in possible_codons:
+                    gc_num = codon.count('G')+codon.count('C')
+                    codon_gc.append(gc_num)
+                # return the index of min value
+                low_gc_indx = codon_gc.index(min(codon_gc))
+                reduce_gc_codon = possible_codons[low_gc_indx]
+                reduce_seq += reduce_gc_codon
+            else:
+                reduce_seq += possible_codons[0]
+        else:
+            # using '*' to represent stop codon
+            reduce_seq += aa
+    return reduce_seq
+
+
 class Bio_calculator():
     # initialize
     def __init__(self, seq, seq_type):
@@ -147,6 +172,7 @@ class Bio_calculator():
         seq = seq.replace('\n', '')
         # remove comma
         seq = seq.replace('\r', '')
+        seq = seq.replace('\'', '')
         seq = list(seq)
         # assign valuabe to self
         self.seq_type = seq_type
@@ -208,6 +234,11 @@ class Bio_calculator():
         self.dilution = dilution
         return 0
 
+    def Codon_optimize(self):
+        optimal_seq = reduce_gc(self.seq)
+        self.optimal_seq = optimal_seq
+        self.optimized = True
+        return 0
 
 if __name__ == '__main__':
     # test with GAPDH sequence
@@ -238,10 +269,12 @@ if __name__ == '__main__':
 
     print('Perform Protein calculation')
     test.Protein_calculator()
+    test.Codon_optimize()
     print('Amino_acid LEN:', test.aa_len, '\n'
           'Protein_MW:', test.aa_mw, ' g/mol', '\n',
           'Protein components:', test.aa_components, '\n',
-          'Protein absorbance coeff:', test.abs_coeff, '\n')
+          'Protein absorbance coeff:', test.abs_coeff, '\n',
+          'Optimal seq:', test.optimal_seq, )
 
 
 
