@@ -99,7 +99,7 @@ def bio_result(request):
         calc.Codon_optimize()
     if calc.refer_freq:
         data = pd.DataFrame(calc.freq_to_refer,
-                            columns=['Amino', 'codon', 'freq'])
+                            columns=['Amino', 'codon', 'freq', 'optimal_freq'])
         script, div = create_freq_map(data)
         context = {'calc': calc,'script':script,'div':div}
     else:
