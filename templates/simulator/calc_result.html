@@ -21,6 +21,17 @@
 
     <!-- Custom styles for this template -->
     <link href="{% static 'bootstrap/css/carousel.css' %}" rel="stylesheet">
+    <!--  styles bokeh -->
+    <link
+    href="http://cdn.pydata.org/bokeh/release/bokeh-0.12.0.min.css"
+    rel="stylesheet" type="text/css">
+    <link
+        href="http://cdn.pydata.org/bokeh/release/bokeh-widgets-0.12.0.min.css"
+        rel="stylesheet" type="text/css">
+    <!-- bokeh js -->
+    <script src="http://cdn.pydata.org/bokeh/release/bokeh-0.12.0.min.js"></script>
+    <script src="http://cdn.pydata.org/bokeh/release/bokeh-widgets-0.12.0.min.js"></script>
+
   </head>
 
 
@@ -70,27 +81,35 @@
 
     <div class="container">
       {% if calc.seq_type == 'DNA' %}
-          <fieldset class="scheduler-border">
-              <legend> <h1>DNA Imformation</h1></legend>
-              <h3><b>DNA Sequence :</b></h3>
-                  <textarea class="form-control" rows="4">{{ calc.dna_seq }}</textarea>
-            {% if calc.optimized %} 
-              <h3><b>GC_Reduce DNA Sequence :</b></h3>
-                  <textarea class="form-control" rows="4">{{ calc.optimal_seq }}</textarea>   
-            {% endif %}      
-              <h3><b>DNA length :</b></h3>
-                  <p>{{ calc.dna_len }} bp</p> 
-              <h3><b>DNA molecular weight :</b></h3>
-                  <p>{{ calc.dna_mw }} g/mol </p> 
-              <h3><b>DNA GC_ratio :</b></h3>
-                  <p>{{ calc.gc_rate }} % </p> 
-              <h3><b>Number of Stop codon :</b></h3>
-                  <p>{{ calc.nb_stop }} </p> 
-          </fieldset>
-          <br/>
-          <br>
+        <fieldset class="scheduler-border">
+            <legend> <h1>DNA Imformation</h1></legend>
+            <h3><b>DNA Sequence :</b></h3>
+                <textarea class="form-control" rows="4">{{ calc.dna_seq }}</textarea>
+          {% if calc.optimal_seq %} 
+            <h3><b>GC_Reduce DNA Sequence :</b></h3>
+                <textarea class="form-control" rows="4">{{ calc.optimal_seq }}</textarea>   
+          {% endif %}      
+            <h3><b>DNA length :</b></h3>
+                <p>{{ calc.dna_len }} bp</p> 
+            <h3><b>DNA molecular weight :</b></h3>
+                <p>{{ calc.dna_mw }} g/mol </p> 
+            <h3><b>DNA GC_ratio :</b></h3>
+                <p>{{ calc.gc_rate }} % </p> 
+            <h3><b>Number of Stop codon :</b></h3>
+                <p>{{ calc.nb_stop }} </p> 
+        </fieldset>
+        <br/>
+        <br>
       {% endif %}
-     <fieldset class="scheduler-border">
+
+      {% if calc.refer_freq %}
+         <div class="container-fluid">
+          {{ script | safe }}
+          {{ div | safe }}
+         </div> 
+      {% endif %}
+      
+      <fieldset class="scheduler-border">
           <legend> <h1>Protein Information</h1></legend>
           <h3><b>Protein sequence (* for Stop codon) :</b></h3>
               <textarea class="form-control" rows="4">{{ calc.aa_seq }}</textarea>
@@ -111,9 +130,11 @@
               <p>{{ calc.molar_con }}  μM/L </p> 
               </b>
               <p>{{ calc.pro_con }}  mg/ml</p>         
-        {% endif %}                             
+        {% endif %} 
+      </fieldset>
+
     </div>
-  
+    
   
     <!-- Bootstrap core JavaScript
     ================================================== -->

@@ -21,6 +21,7 @@
 
     <!-- Custom styles for this template -->
     <link href="{% static 'bootstrap/css/carousel.css' %}" rel="stylesheet">
+
   </head>
 
 
@@ -75,8 +76,14 @@
           <br>
           <label class="badge">Optimize Sequence:</label> 
           <select name="gc_reduce" >
-            <option value="yes"><b>Reduce_GC</b></option>
             <option value="no"><b>Don't optimize</b></option>
+            <option value="yes"><b>Reduce_GC</b></option>
+          </select>
+          <br>
+          <label class="badge">Analysis codon frequency:</label> 
+          <select name="codon_ref" >
+            <option value="K12"><b>K12 E.coli</b></option>
+            <option value="no"><b>Don't Analysis</b></option>
           </select>
           <br>
           <textarea type ='text' name='seq' class="form-control" rows="4" placeholder="Your Sequence(Make sure they are capital letters!)" required ></textarea>  <br>

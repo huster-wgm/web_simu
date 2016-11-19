@@ -1,5 +1,5 @@
 from .simu import fit_models,generate_result
-from .bio_calc import Bio_calculator
+from .bio_calc import Bio_calculator, create_freq_map
 from django.shortcuts import render
 from django.http import HttpResponse
 import pandas as pd
@@ -70,21 +70,23 @@ def bio_calculator(request):
 # return result of bio_calculators
 def bio_result(request):
     # using DNA calculator
+    refer_freq = {}
     if request.POST['submit']=='DNA_Calc':
         seq_type = request.POST["seq_type"]
         seq = request.POST['seq']
         measure_con = False
         # create calculator objects
-        calc = Bio_calculator(seq, seq_type)
-        
-
+        if request.POST['codon_ref'] == 'K12':
+            path = path = 'https://docs.google.com/spreadsheets/d/1PaitzLRv3VIR0lTuI86eFLwzupdZpYwY8VPBaAS0WJc/pub?gid=0&single=true&output=csv'
+            refer_freq = dict(pd.read_csv(path).values)
+        calc = Bio_calculator(seq, seq_type, refer_freq)
     # using Protein concentration calculator
     else:
         seq_type = request.POST["seq_type_2"]
         seq = request.POST['seq_2']
         measure_con = True
         # create calculator objects
-        calc = Bio_calculator(seq, seq_type)        
+        calc = Bio_calculator(seq, seq_type, refer_freq)        
         width = float(request.POST['width'])
         a_280 = float(request.POST['a_280'])
         dilution = float(request.POST['dilution'])
@@ -94,6 +96,13 @@ def bio_result(request):
     if measure_con:
         calc.Protein_con(width, a_280, dilution)
     if request.POST['gc_reduce'] == 'yes':
-        calc.Codon_optimize()    
-    context = {'calc': calc}
+        calc.Codon_optimize()
+    if calc.refer_freq:
+        data = pd.DataFrame(calc.freq_to_refer,
+                            columns=['Amino', 'codon', 'freq'])
+        script, div = create_freq_map(data)
+        context = {'calc': calc,'script':script,'div':div}
+    else:
+        context = {'calc': calc}
+
     return render(request, 'simulator/calc_result.html',context)

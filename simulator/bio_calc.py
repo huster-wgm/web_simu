@@ -7,6 +7,50 @@ Created on Sun Nov 13 22:25:05 2016
 """
 
 import numpy as np
+import pandas as pd
+from math import pi
+
+from bokeh.plotting import figure
+from bokeh.models import NumeralTickFormatter, HoverTool, ColumnDataSource
+from bokeh.embed import components
+
+
+def create_freq_map(df):
+    nb_of_aa = list(range(1, df.shape[0]+1))
+    freq = df['freq'].values
+    aa = df['Amino']
+    codon = df['codon']
+
+    source = ColumnDataSource(
+        data=dict(x=nb_of_aa, y=freq, amino=aa, codon=codon)
+    )
+
+    TOOLS = "hover,save,pan,box_zoom,wheel_zoom,reset"
+    p = figure(responsive=True, plot_width=800, plot_height=400,
+               x_range=(0, df.shape[0]+2), tools=TOOLS)
+    # add a line renderer
+    p.line(x='x', y='y', line_width=2, source=source)
+    p.line(nb_of_aa, y=0.1, line_color="red", legend="10% baseline")
+    # change just some things about the x-axes
+    p.title.text = 'Codon frequency to refer species'
+    p.title.text_font_size = '36pt'
+    p.title.align = 'center'
+    p.xaxis.axis_label = "No. of the Amino acid residue"
+    p.xaxis.axis_label_text_font_size = '20pt'
+    p.xaxis.major_label_orientation = pi/4
+    p.yaxis.axis_label = 'Refer codon freqency'
+    p.yaxis.axis_label_text_font_size = '20pt'
+    p.yaxis[0].formatter = NumeralTickFormatter(format="0.0%")
+
+    p.select_one(HoverTool).tooltips = [
+        ('Position', '@x'),
+        ('Codon', '@codon'),
+        ('Amino acid', '@amino'),
+        ('Frequency', '@y'),
+    ]
+    script, div = components(p)
+
+    return script, div
 
 
 # refer to https://en.wikipedia.org/wiki/DNA_codon_table
@@ -34,6 +78,30 @@ aa_code_dict = {
                 '*': ['TAA', 'TGA', 'TAG'],  # represents stop codon
                 }
 
+gc_reduce_dict = {
+                'A': ['GCT', 'GCA', 'GCG'],
+                'R': ['AGA'],
+                'N': ['AAT'],
+                'D': ['GAT'],
+                'C': ['TGT'],
+                'Q': ['CAA'],
+                'E': ['GAA'],
+                'G': ['GGT', 'GGA'],
+                'H': ['CAT'],
+                'I': ['ATT'],
+                'M': ['ATG'],
+                'L': ['TTA', 'TTG', 'CTT', 'CTA'],
+                'K': ['AAA'],
+                'F': ['TTT', 'TTC'],
+                'P': ['CCT', 'CCA'],
+                'S': ['TCT', 'TCA','AGT'],
+                'T': ['ACT', 'ACA'],
+                'W': ['TGG'],
+                'Y': ['TAT'],
+                'V': ['GTT', 'GTA'],
+                '*': ['TAA', 'TGA', 'TAG'],  # represents stop codon
+                }
+
 
 def key_by_value(dicts, search_value):
     for key, values in dicts.items():
@@ -41,7 +109,7 @@ def key_by_value(dicts, search_value):
             return key
 
 
-def DNA_to_AA(seq):
+def DNA_to_AA(seq, codon_freq):
     aa_seq = []
     coding_len = len(seq) // 3
     for i in range(0, coding_len):
@@ -49,7 +117,15 @@ def DNA_to_AA(seq):
         DNA_code = ''.join(DNA_code)
         # match DNA_code to Amino acid
         aa = key_by_value(aa_code_dict, DNA_code)
-        aa_seq.append(aa)
+        # bool(codon_freq) is false when empty
+        if bool(codon_freq):
+            # show codon frequence of aa
+            freq = round(codon_freq[DNA_code], 3)
+            aa_seq.append([aa, DNA_code, freq])
+        else:
+            # no refer codon freq
+            aa_seq.append(aa)
+    # becareful freq will be converted to 'str'
     return np.array(aa_seq)
 
 
@@ -145,7 +221,7 @@ def reduce_gc(seq):
     for aa in seq:
         # if amino acid is not a stop codon
         if aa != '*':
-            possible_codons = aa_code_dict[aa]
+            possible_codons = 'TAA'
             if len(possible_codons) > 1:
                 codon_gc = []
                 for codon in possible_codons:
@@ -165,18 +241,17 @@ def reduce_gc(seq):
 
 class Bio_calculator():
     # initialize
-    def __init__(self, seq, seq_type):
+    def __init__(self, seq, seq_type, refer_freq={}):
         # remove empty spaces
         seq = seq.replace(' ', '')
         # remove change line mark
         seq = seq.replace('\n', '')
         # remove comma
         seq = seq.replace('\r', '')
-        seq = seq.replace('\'', '')
         seq = list(seq)
-        # assign valuabe to self
         self.seq_type = seq_type
         self.seq = np.array(seq)
+        self.refer_freq = refer_freq
         assert self.seq_type in ['DNA', 'Protein'], "Wrong sequence type"
 
     def DNA_calculator(self):
@@ -184,23 +259,25 @@ class Bio_calculator():
         if seq_type == 'DNA':
             # DNA sequence
             dna_len = len(self.seq)
-            aa_seq = DNA_to_AA(self.seq)
+            trans_result = DNA_to_AA(self.seq, self.refer_freq)
             dna_mw, gc_rate = DNA_MW(self.seq, dna_len)
             # assign parameters to self object
             self.dna_seq = ''.join(self.seq)
             self.dna_len = dna_len
             self.dna_mw = dna_mw
             self.gc_rate = gc_rate
-            self.aa_seq = ''.join(aa_seq)
-            # repalce the seq with amino sequence
-            self.seq = aa_seq
+            if self.refer_freq:
+                self.freq_to_refer = trans_result
+                self.aa_seq = ''.join(trans_result[:, 0])
+            else:
+                self.freq_to_refer = None
+                self.aa_seq = ''.join(trans_result)
         else:
             self.dna_seq = None
             self.dna_mw = None
             self.gc_rate = None
             # calculate DNA length
-            dna_len = len(self.seq)*3
-            self.dna_len = dna_len
+            self.dna_len = len(self.seq)*3
             self.aa_seq = ''.join(self.seq)
             # amino acid seqence
             aa_len = len(self.seq)
@@ -209,9 +286,9 @@ class Bio_calculator():
 
     def Protein_calculator(self):
         # get protein molecular weight
-        aa_components, abs_coeff = Protein_components(self.seq)
-        aa_mw = Protein_MW(self.seq, aa_components)
-        self.aa_len = len(self.seq)-aa_components['*']
+        aa_components, abs_coeff = Protein_components(list(self.aa_seq))
+        aa_mw = Protein_MW(list(self.aa_seq), aa_components)
+        self.aa_len = len(list(self.aa_seq))-aa_components['*']
         self.aa_mw = aa_mw
         self.aa_components = aa_components
         self.abs_coeff = abs_coeff
@@ -235,9 +312,8 @@ class Bio_calculator():
         return 0
 
     def Codon_optimize(self):
-        optimal_seq = reduce_gc(self.seq)
+        optimal_seq = reduce_gc(self.aa_seq)
         self.optimal_seq = optimal_seq
-        self.optimized = True
         return 0
 
 if __name__ == '__main__':
@@ -257,7 +333,14 @@ if __name__ == '__main__':
                 CTGAACGACAACTTCGTGAAACTGGTATCCTGGTACGACAACGAAACCGGTTACTCCAACAAAGTTCTGGACCTG\
                 ATCGCTCACATCTCCAAATAA')
     seq_type_test = 'DNA'
-    test = Bio_calculator(seq_test, seq_type_test)
+    #ref_freq = {}
+
+    # path = '../static/K12_codon_freq.csv' # local path
+    path = 'https://docs.google.com/spreadsheets/d/1PaitzLRv3VIR0lTuI86eFLwzupdZpYwY8VPBaAS0WJc/pub?gid=0&single=true&output=csv'
+    codon_freq = pd.read_csv(path)
+    ref_freq = dict(codon_freq.values)
+
+    test = Bio_calculator(seq_test, seq_type_test, ref_freq)
     print('Perform DNA calculation')
     test.DNA_calculator()
     print('DNA SEQ:', test.dna_seq, '\n',
@@ -275,6 +358,7 @@ if __name__ == '__main__':
           'Protein components:', test.aa_components, '\n',
           'Protein absorbance coeff:', test.abs_coeff, '\n',
           'Optimal seq:', test.optimal_seq, )
-
-
-
+    if test.refer_freq:
+        data = pd.DataFrame(test.freq_to_refer,
+                            columns=['Amino', 'codon', 'freq'])
+        script, div = create_freq_map(data)
