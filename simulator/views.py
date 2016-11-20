@@ -71,9 +71,13 @@ def bio_calculator(request):
 def bio_result(request):
     # using DNA calculator
     refer_freq = {}
+    # initial gc_reduce
+    gc_reduce = False
     if request.POST['submit']=='DNA_Calc':
         seq_type = request.POST["seq_type"]
         seq = request.POST['seq']
+        if request.POST['gc_reduce'] == 'yes':
+            gc_reduce = True
         measure_con = False
         # create calculator objects
         if request.POST['codon_ref'] == 'K12':
@@ -95,7 +99,7 @@ def bio_result(request):
     calc.Protein_calculator()
     if measure_con:
         calc.Protein_con(width, a_280, dilution)
-    if request.POST['gc_reduce'] == 'yes':
+    if gc_reduce:
         calc.Codon_optimize()
     if calc.refer_freq:
         data = pd.DataFrame(calc.freq_to_refer,
