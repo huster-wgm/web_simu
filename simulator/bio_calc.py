@@ -16,25 +16,32 @@ from bokeh.embed import components
 
 
 def create_freq_map(df):
-    nb_of_aa = list(range(1, df.shape[0]+1))
-    freq = df['freq'].values
-    optimal_freq = df['optimal_freq'].values
-    aa = df['Amino']
+    # df columns=['Amino', 'codon', 'freq', 'optimal_codon', 'optimal_freq'])
+    position = list(range(1, df.shape[0]+1))
+    # assign values to data
+    amino = df['Amino']
     codon = df['codon']
+    freq = df['freq'].values
+    optimal_codon = df['optimal_codon']
+    optimal_freq = df['optimal_freq'].values
 
     source = ColumnDataSource(
-        data=dict(x=nb_of_aa, y=freq, amino=aa, codon=codon, optimal =optimal_freq)
+        data=dict(position=position, amino=amino,
+                  codon=codon, freq=freq,
+                  optimal_codon=optimal_codon, optimal_freq=optimal_freq)
     )
 
     TOOLS = "hover,save,pan,box_zoom,wheel_zoom,reset"
     p = figure(responsive=True, plot_width=800, plot_height=400,
                x_range=(0, df.shape[0]+2), tools=TOOLS)
     # add a line renderer
-    p.line(x='x', y='y',
-           line_width=2, source=source)
-    p.line(x='x', y='optimal',
-           line_width=2,line_color="purple", source=source)
-    p.line(nb_of_aa, y=0.1,
+    p.line(x='position', y='freq',
+           line_width=2, source=source,
+           legend='Actual codon map')
+    p.line(x='position', y='optimal_freq',
+           line_width=2, line_color="purple",
+           source=source, legend='Optimal codon map')
+    p.line(x=position, y=0.1,
            line_color="red", legend="10% baseline")
     # change just some things about the x-axes
     p.title.text = 'Codon frequency to refer species'
@@ -48,12 +55,14 @@ def create_freq_map(df):
     p.yaxis[0].formatter = NumeralTickFormatter(format="0.0%")
 
     p.select_one(HoverTool).tooltips = [
-        ('Position', '@x'),
-        ('Codon', '@codon'),
+        ('Position', '@position'),
         ('Amino acid', '@amino'),
-        ('Frequency', '@y'),
-        ('Optimal frequency','@optimal')
-    ]
+        ('Codon', '@codon'),
+        ('Frequency', '@freq'),
+        ('optimal_codon', '@optimal_codon'),
+        ('Optimal frequency', '@optimal_freq'),
+        ]
+
     script, div = components(p)
 
     return script, div
@@ -146,14 +155,16 @@ def DNA_to_AA(seq, codon_freq):
         # bool(codon_freq) is false when empty
         if bool(codon_freq):
             # get [amino_acid,optimal_codon,optimal_freq]
-            optimal_codon = Get_optimal_codon(codon_freq)
-            # extract [amino_acid,optima_freq]
-            optimal_codon = np.delete(optimal_codon, 1, 1)
-            optimal_codon = dict(optimal_codon)
+            optimal_ref = Get_optimal_codon(codon_freq)
+            # extract [amino_acid,optimal_freq] dictionary
+            optimal_freq_ref = dict(zip(optimal_ref[:, 0], optimal_ref[:, 2]))
+            # extract [amino_acid,optimal_codon] dictionary
+            optimal_codon_ref = dict(zip(optimal_ref[:, 0], optimal_ref[:, 1]))
             # show codon frequence of aa
             freq = round(codon_freq[DNA_code], 3)
-            optimal_freq = round(float(optimal_codon[aa]), 3)
-            aa_seq.append([aa, DNA_code, freq, optimal_freq])
+            optimal_freq = round(float(optimal_freq_ref[aa]), 3)
+            optimal_codon = optimal_codon_ref[aa]
+            aa_seq.append([aa, DNA_code, freq, optimal_codon, optimal_freq])
         else:
             # no refer codon freq
             aa_seq.append(aa)
@@ -365,7 +376,7 @@ if __name__ == '__main__':
                 CTGAACGACAACTTCGTGAAACTGGTATCCTGGTACGACAACGAAACCGGTTACTCCAACAAAGTTCTGGACCTG\
                 ATCGCTCACATCTCCAAATAA')
     seq_type_test = 'DNA'
-    #ref_freq = {}
+    # ref_freq = {}
 
     # path = '../static/K12_codon_freq.csv' # local path
     path = 'https://docs.google.com/spreadsheets/d/1PaitzLRv3VIR0lTuI86eFLwzupdZpYwY8VPBaAS0WJc/pub?gid=0&single=true&output=csv'
@@ -392,5 +403,6 @@ if __name__ == '__main__':
           'Optimal seq:', test.optimal_seq, )
     if test.refer_freq:
         data = pd.DataFrame(test.freq_to_refer,
-                            columns=['Amino', 'codon', 'freq', 'optimal_freq'])
+                            columns=['Amino', 'codon', 'freq',
+                                     'optimal_codon', 'optimal_freq'])
         script, div = create_freq_map(data)
