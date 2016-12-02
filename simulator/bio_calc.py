@@ -15,7 +15,7 @@ from bokeh.models import NumeralTickFormatter, HoverTool, ColumnDataSource
 from bokeh.embed import components
 
 
-def create_freq_map(df):
+def Create_freq_map(df):
     # df columns=['Amino', 'codon', 'freq', 'optimal_codon', 'optimal_freq'])
     position = list(range(1, df.shape[0]+1))
     # assign values to data
@@ -35,12 +35,12 @@ def create_freq_map(df):
     p = figure(responsive=True, plot_width=800, plot_height=400,
                x_range=(0, df.shape[0]+2), tools=TOOLS)
     # add a line renderer
-    p.line(x='position', y='freq',
-           line_width=2, source=source,
-           legend='Actual codon map')
     p.line(x='position', y='optimal_freq',
            line_width=2, line_color="purple",
            source=source, legend='Optimal codon map')
+    p.line(x='position', y='freq',
+           line_width=2, source=source,
+           legend='Actual codon map')
     p.line(x=position, y=0.1,
            line_color="red", legend="10% baseline")
     # change just some things about the x-axes
@@ -59,7 +59,7 @@ def create_freq_map(df):
         ('Amino acid', '@amino'),
         ('Codon', '@codon'),
         ('Frequency', '@freq'),
-        ('optimal_codon', '@optimal_codon'),
+        ('Optimal_codon', '@optimal_codon'),
         ('Optimal frequency', '@optimal_freq'),
         ]
 
@@ -405,4 +405,4 @@ if __name__ == '__main__':
         data = pd.DataFrame(test.freq_to_refer,
                             columns=['Amino', 'codon', 'freq',
                                      'optimal_codon', 'optimal_freq'])
-        script, div = create_freq_map(data)
+        script, div = Create_freq_map(data)

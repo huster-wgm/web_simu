@@ -1,5 +1,5 @@
 from .simu import fit_models,generate_result
-from .bio_calc import Bio_calculator, create_freq_map
+from .bio_calc import Bio_calculator, Create_freq_map
 from django.shortcuts import render
 from django.http import HttpResponse
 import pandas as pd
@@ -81,7 +81,13 @@ def bio_result(request):
         measure_con = False
         # create calculator objects
         if request.POST['codon_ref'] == 'K12':
-            path = path = 'https://docs.google.com/spreadsheets/d/1PaitzLRv3VIR0lTuI86eFLwzupdZpYwY8VPBaAS0WJc/pub?gid=0&single=true&output=csv'
+            path = 'https://docs.google.com/spreadsheets/d/1PaitzLRv3VIR0lTuI86eFLwzupdZpYwY8VPBaAS0WJc/pub?gid=0&single=true&output=csv'
+            
+        elif request.POST['codon_ref'] == 'yeast':
+            path = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTkB4PueNxiKl548CC39uFHBtEbSm4FA75l4bDTyAQlM7FmoOoPRGsbJFogcSgQWzKbQeqGx5sE74-Q/pub?gid=0&single=true&output=csv'
+        else:
+            path = None
+        if path:
             refer_freq = dict(pd.read_csv(path).values)
         calc = Bio_calculator(seq, seq_type, refer_freq)
     # using Protein concentration calculator
@@ -104,7 +110,7 @@ def bio_result(request):
     if calc.refer_freq:
         data = pd.DataFrame(calc.freq_to_refer,
                             columns=['Amino', 'codon', 'freq', 'optimal_codon', 'optimal_freq'])
-        script, div = create_freq_map(data)
+        script, div = Create_freq_map(data)
         context = {'calc': calc,'script':script,'div':div}
     else:
         context = {'calc': calc}
