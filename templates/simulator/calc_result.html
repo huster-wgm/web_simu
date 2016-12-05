@@ -11,7 +11,7 @@
     <title>Bio-Results</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="{% static 'bootstrap/css/bootstrap.min.css'  %}"rel="stylesheet">
+    <link href="{% static 'bootstrap/css/bootstrap.min.css'  %}" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -82,20 +82,20 @@
     <div class="container">
       {% if calc.seq_type == 'DNA' %}
         <fieldset class="scheduler-border">
-            <legend> <h1>DNA Imformation</h1></legend>
-            <h3><b>DNA Sequence :</b></h3>
+            <legend> <h1>DNA Information</h1></legend>
+            <h3><b> DNA Sequence :</b></h3>
                 <textarea class="form-control" rows="4">{{ calc.dna_seq }}</textarea>
           {% if calc.optimal_seq %} 
-            <h3><b>GC_Reduce DNA Sequence :</b></h3>
+            <h3><b> Optimized DNA Sequence :</b></h3>
                 <textarea class="form-control" rows="4">{{ calc.optimal_seq }}</textarea>   
           {% endif %}      
-            <h3><b>DNA length :</b></h3>
+            <h3><b> DNA length :</b></h3>
                 <p>{{ calc.dna_len }} bp</p> 
-            <h3><b>DNA molecular weight :</b></h3>
+            <h3><b> DNA molecular weight :</b></h3>
                 <p>{{ calc.dna_mw }} g/mol </p> 
-            <h3><b>DNA GC_ratio :</b></h3>
+            <h3><b> DNA GC_ratio :</b></h3>
                 <p>{{ calc.gc_rate }} % </p> 
-            <h3><b>Number of Stop codon :</b></h3>
+            <h3><b> Number of Stop codon :</b></h3>
                 <p>{{ calc.nb_stop }} </p> 
         </fieldset>
         <br/>
@@ -123,12 +123,12 @@
               <p>{{ calc.nb_met }}  </p>     
           <h3><b>All Amino acid components :</b></h3>
               <textarea class="form-control" rows="2" style="font-size:20px">{{ calc.aa_components }}</textarea> 
-        {% if calc.measure %}
+        {% if calc.pro_con %}
           <h3><b> Dilution factor :</b></h3>
               <p>{{ calc.dilution }} </p> 
           <h3><b>Protein concentration :</b></h3>
-              <p>{{ calc.molar_con }}  μM </p> 
-              </b>
+              <p>{{ calc.molar_con }}  μM </p>
+              <br>
               <p>{{ calc.pro_con }}  mg/ml</p>         
         {% endif %} 
       </fieldset>

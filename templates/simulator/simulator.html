@@ -12,7 +12,6 @@
 
     <!-- Bootstrap core CSS -->
     <link href="{% static 'bootstrap/css/bootstrap.min.css'  %}"rel="stylesheet">
-
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -60,7 +59,7 @@
         <div  class="col-lg-4">
            <h1><b>Introduction</b></h1>
             <p>This is a simple tool for basic simulation task.</br>Currently, it support linear,
-              polynomial and sigmoid funtion.
+              polynomial and sigmoid function.
             </p>
        </div>
     </div>
@@ -68,11 +67,10 @@
 
     <form action="./simu_result" method="post" enctype="multipart/form-data" >{% csrf_token %}
       <fieldset class="scheduler-border text-center" >
-          <legend>Edit data online  </legend>
-          <label class="badge">Replace with your personal data:</label> </br>
-          <iframe width='80%' height='60%' frameborder='0' 
-            src="https://docs.google.com/spreadsheets/d/1dKGnbgr0ld1Ny17b-vN81Rubt3_cwpqcT3-9V5QqbjE/edit?usp=sharing">
-          </iframe>
+        <legend> Upload Data(.csv) </legend>
+          <input type="file" id="files" name="upfile"  required/>
+
+
       </fieldset>
       <br/>
       <fieldset class="scheduler-border">

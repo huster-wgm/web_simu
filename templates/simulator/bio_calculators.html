@@ -75,9 +75,10 @@
           </select>
           <br>
           <label class="badge">Optimize Sequence:</label> 
-          <select name="gc_reduce" >
+          <select name="optimized" >
             <option value="no"><b>Don't optimize</b></option>
-            <option value="yes"><b>Reduce_GC</b></option>
+            <option value="reduce gc"><b>Reduce_GC</b></option>
+            <option value="codon usage"><b>Codon usage</b></option>
           </select>
           <br>
           <label class="badge">Analysis codon frequency:</label> 
@@ -110,6 +111,7 @@
           <label class="badge"> Dilution factors </label>
             <input type="text" name="dilution" required> <br>            
           <input type="submit" name ='submit' value="Protein_Calc" class="btn btn-primary">
+     </fieldset>
     </form>
   </div>
     <!-- Bootstrap core JavaScript
