@@ -3,7 +3,6 @@ from .bio_calc import BioCalculator, create_freq_map
 from django.shortcuts import render
 from django.http import HttpResponse
 import pandas as pd
-import numpy as np
 
 
 def file_format(request, file):
@@ -80,21 +79,25 @@ def simulation_result(request):
         # print(standard.shape, unknown.shape)
         # type of regression function
         type_of_f = str(request.POST["types"])
-        # fit to simulation object
-        fit = FitModels(standard_y, standard_x)
+
         print("step 3, fitting")
         if type_of_f == "1":
             # execute linear regression
-            fit.linear_regression()
+            # fit to simulation object
+            fit = FitModels(standard_y, standard_x)
+            fit = fit.linear_regression()
             fit.predict_unknown(unknown_y)
         elif type_of_f == '2':
             # execute polynomial regression up to power 3
-            fit.polynomial_regression()
+            fit = FitModels(standard_y, standard_x)
+            fit = fit.polynomial_regression()
             fit.predict_unknown(unknown_y)
         elif type_of_f == '3':
-            fit.sigmoid_regression()
+            fit = FitModels(standard_y, standard_x)
+            fit = fit.sigmoid_regression()
             fit.predict_unknown(unknown_y)
         elif type_of_f == '4':
+            fit = FitModels(standard_y, standard_x)
             fit = fit.all_regression()
             fit.predict_unknown(unknown_y)
         else:

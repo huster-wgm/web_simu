@@ -147,20 +147,22 @@ class FitModels:
         return self
 
     def all_regression(self):
-        fits = FitModels(self.y, self.x)
-        linear_linear__m_s_e = fits.linear_regression().MSE
-        poly_m_s_e = fits.polynomial_regression().MSE
-        sigmoid_m_s_e = fits.sigmoid_regression().MSE
-        mse_list = [linear_linear__m_s_e, poly_m_s_e, sigmoid_m_s_e]
+        linear = FitModels(self.y, self.x).linear_regression()
+        poly = FitModels(self.y, self.x).polynomial_regression()
+        sigmoid = FitModels(self.y, self.x).sigmoid_regression()
+        mse_list = [linear.MSE, poly.MSE, sigmoid.MSE]
+        print(mse_list)
         index_of_min = mse_list.index(min(mse_list))
+        print(index_of_min)
         if index_of_min == 0:
-            return fits.linear_regression
+            return linear
         elif index_of_min == 1:
-            return fits.polynomial_regression()
+            return poly
         elif index_of_min == 2:
-            return fits.sigmoid_regression()
+            return sigmoid
         else:
-            return 'Fitting errors'
+            print("smallest among three:", index_of_min)
+            raise TypeError
 
     def predict_unknown(self, unknown_y):
         # predict x base on input unknown y
@@ -195,10 +197,11 @@ class FitModels:
                                                accuracy=3,
                                                domain=x_range,
                                                )
-                unknown_y -= np.min(self.y)
+                unknown_y = np.array(unknown_y)-np.min(self.y)
                 self.predict_x = np.round(reverse_function(unknown_y), 3)
             else:
-                raise TypeError
+                print('Best regression :', fit_function)
+                # raise TypeError
 
             self.predict_x = np.round(reverse_function(unknown_y), 3)
         return self
@@ -253,6 +256,8 @@ def generate_result(fits, request):
     else:
         p.asterisk(x, y, legend="Actual data", color=maker_color, line_color=None, size=12, alpha=0.8)
     p.line(fits.x_axis, fits.y_axis, legend="Regression curve", line_color=curve_color, alpha=0.6)
+
+    p.legend.location = 'top_left'
     p.xgrid.grid_line_color = None
     p.ygrid.grid_line_color = None
     p.xaxis.axis_label_text_font_size = "20pt"
@@ -266,7 +271,7 @@ def generate_result(fits, request):
         TableColumn(field="y", title=y_axis_label+' of Standard'),
     ]
 
-    standard_table = DataTable(source=standard_source, columns=standard_columns, width=300, height=500)
+    standard_table = DataTable(source=standard_source, columns=standard_columns, width=350, height=300)
 
     # create unknown data widgets
     unknown = {'x': predict_x, 'y': unknown_y}
@@ -276,7 +281,7 @@ def generate_result(fits, request):
         TableColumn(field="y", title=y_axis_label + ' of unknown'),
     ]
 
-    unknown_table = DataTable(source=unknown_source, columns=unknown_columns, width=300, height=500)
+    unknown_table = DataTable(source=unknown_source, columns=unknown_columns, width=350, height=300)
     widgets = widgetbox(standard_table, unknown_table, width=400)
 
     # put the results in a row
@@ -319,7 +324,7 @@ def test():
           )
 
     sigmoid = fits.sigmoid_regression()
-    sigmoid.predict_unknown(unknown_y)
+    # sigmoid.predict_unknown(unknown_y)
     print("sigmoid \n",
           sigmoid.function_name, '\n',
           sigmoid.params, '\n',
