@@ -24,51 +24,87 @@ def simulator(request):
 def simulation_result(request):
     if request.method == "GET":
         print("request method == 'GET'")
-        return render(request, 'simulator/empty_result.html')
+        return render(request, 'simulator/error.html')
     else:
-        try:
-            print("Start reading csv")
-            up_file = request.FILES["upfile"]
-            # verified upload file format
-            if not up_file.name.endswith('.csv'):
-                raise NameError
-            else:
-                df = pd.read_csv(up_file, header=None)
-                print(df.shape, df)
-                # number of NAN
-                null_rows = sum(df.iloc[:, -1].isnull())
-                null_cols = sum(df.iloc[-1, :].isnull())
-                print("step 1, %d null_rows, %d null_cols" % (null_rows, null_cols))
-                # remove NAN and header
-                df = df.iloc[null_rows + 1:, null_cols:]
-                print("step 2, removed header.")
-                # assign values to x and y
-                x = np.array(df.iloc[:, 0].values, dtype="float16")
-                y = np.array(df.iloc[:, 1].values, dtype="float16")
-                # type of regression function
-                type_of_f = str(request.POST["types"])
-                # fit to simulation object
-                fit = FitModels(y, x)
-                print("step 3, fitting")
-                if type_of_f == "1":
-                    # execute linear regression
-                    fit.linear_regression()
-                elif type_of_f == '2':
-                    # execute polynomial regression up to power 3
-                    fit.polynomial_regression()
-                elif type_of_f == '3':
-                    fit.sigmoid_regression()
-                elif type_of_f == '4':
-                    fit = fit.all_regression()
+        '''
+        # read personal data from upload csv file
+        print("Start reading csv")
+        up_file = request.FILES["upfile"]
+        # verified upload file format
+        if not up_file.name.endswith('.csv'):
+            raise NameError
+        else:
+            df = pd.read_csv(up_file, header=None)
+            print(df.shape, df)
+            # number of NAN
+            null_rows = sum(df.iloc[:, -1].isnull())
+            null_cols = sum(df.iloc[-1, :].isnull())
+            print("step 1, %d null_rows, %d null_cols" % (null_rows, null_cols))
+            # remove NAN and header
+            df = df.iloc[null_rows + 1:, null_cols:]
+            print("step 2, removed header.")
+            # assign values to x and y
+            x = np.array(df.iloc[:, 0].values, dtype="float16")
+            y = np.array(df.iloc[:, 1].values, dtype="float16")
+        '''
+        standard = request.POST['standard'].strip('\r')
+        unknown = request.POST['unknown'].strip('\r')
+        print('start handling upload data')
+        # change string to list
+        standard = standard.replace("\r", "").split('\n')
+        unknown = unknown.replace("\r", "").split('\n')
+        print('type of standard and unknown', type(standard), type(unknown))
+        print(standard, unknown)
+        standard_x, standard_y = [], []
+        for i in standard:
+            if i:
+                data_set = i.split('\t')
+                if data_set[0] and data_set[1]:
+                    x_val = float(data_set[0])
+                    y_val = float(data_set[1])
+                    standard_x.append(x_val)
+                    standard_y.append(y_val)
                 else:
-                    raise ValueError
-                # generate result and write into 'simulator/result.html'
-                print('fitting is ok!')
-                html = generate_result(fit, request)
-                print('succeed in generating html.')
-                return HttpResponse(html)
-        except:
-            return render(request, 'simulator/error.html')
+                    # avoid input only x or y
+                    continue
+            else:
+                # avoid empty line
+                continue
+        # print(standard_x, standard_y)
+        unknown_y = []
+        for j in unknown:
+            if j:
+                unknown_y.append(float(j))
+            else:
+                continue
+        # print(standard.shape, unknown.shape)
+        # type of regression function
+        type_of_f = str(request.POST["types"])
+        # fit to simulation object
+        fit = FitModels(standard_y, standard_x)
+        print("step 3, fitting")
+        if type_of_f == "1":
+            # execute linear regression
+            fit.linear_regression()
+            fit.predict_unknown(unknown_y)
+        elif type_of_f == '2':
+            # execute polynomial regression up to power 3
+            fit.polynomial_regression()
+            fit.predict_unknown(unknown_y)
+        elif type_of_f == '3':
+            fit.sigmoid_regression()
+            fit.predict_unknown(unknown_y)
+        elif type_of_f == '4':
+            fit = fit.all_regression()
+            fit.predict_unknown(unknown_y)
+        else:
+            raise ValueError
+        # generate result and write into 'simulator/result.html'
+        print('fitting is ok!')
+        html = generate_result(fit, request)
+        print('succeed in generating html.')
+        print(fit.predict_x)
+        return HttpResponse(html)
 
 
 def bio_calculator(request):

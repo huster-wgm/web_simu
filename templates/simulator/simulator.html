@@ -67,10 +67,11 @@
 
     <form action="./simu_result" method="post" enctype="multipart/form-data" >{% csrf_token %}
       <fieldset class="scheduler-border text-center" >
-        <legend> Upload Data(.csv) </legend>
-          <input type="file" id="files" name="upfile"  required/>
-
-
+        <legend> Input Data </legend>
+        <label class="badge" > <b><h4>Standard x and y:</h4></b> </label>
+          <textarea type ='text' name='standard' class="form-control" rows="4" placeholder="Standard DATA(Make sure they are Space separated!)" required ></textarea>
+        <label class="badge"> <b><h4>Unknown y:</h4></b> </label>
+        <textarea type ='text' name='unknown' class="form-control" rows="4" placeholder="Unknown DATA" required ></textarea>
       </fieldset>
       <br/>
       <fieldset class="scheduler-border">
