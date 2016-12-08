@@ -90,24 +90,53 @@ def simulation_result(request):
         elif type_of_f == '2':
             # execute polynomial regression up to power 3
             fit = FitModels(standard_y, standard_x)
-            fit = fit.polynomial_regression()
+            fit = fit.quadratic_regression()
             fit.predict_unknown(unknown_y)
         elif type_of_f == '3':
             fit = FitModels(standard_y, standard_x)
-            fit = fit.sigmoid_regression()
+            fit = fit.polynomial_regression()
             fit.predict_unknown(unknown_y)
         elif type_of_f == '4':
+            fit = FitModels(standard_y, standard_x)
+            fit = fit.power_regression()
+            fit.predict_unknown(unknown_y)
+        elif type_of_f == '5':
+            fit = FitModels(standard_y, standard_x)
+            fit = fit.exponential_regression()
+            fit.predict_unknown(unknown_y)
+        elif type_of_f == '6':
+            fit = FitModels(standard_y, standard_x)
+            fit = fit.logarithmic_regression()
+            fit.predict_unknown(unknown_y)
+        elif type_of_f == '7':
+            fit = FitModels(standard_y, standard_x)
+            fit = fit.sigmoid_regression()
+            fit.predict_unknown(unknown_y)
+        elif type_of_f == '8':
             fit = FitModels(standard_y, standard_x)
             fit = fit.all_regression()
             fit.predict_unknown(unknown_y)
         else:
             raise ValueError
-        # generate result and write into 'simulator/result.html'
-        print('fitting is ok!')
-        html = generate_result(fit, request)
-        print('succeed in generating html.')
-        print(fit.predict_x)
-        return HttpResponse(html)
+        if fit.R_square == 0:
+            print('failed in fitting using current function.')
+            # save error message in context
+            context = {'error_line_1': 'Failed in fitting using current function.',
+                       'error_line_2': 'Change regression function type \
+                                        or try all regression method'}
+            return render(request, 'simulator/error.html', context)
+        elif fit.unable_predict:
+            print('failed to predict unknown y .')
+            # save error message in context
+            context = {'error_line_1': 'Failed to predict unknown y using current function.',
+                       'error_line_2': 'Change regression function type \
+                                        or try all regression method'}
+            return render(request, 'simulator/error.html', context)
+        else:
+            print('succeed in generating html.')
+            # generate html result
+            html = generate_result(fit, request)
+            return HttpResponse(html)
 
 
 def bio_calculator(request):

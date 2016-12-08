@@ -29,26 +29,43 @@ def simu_poly(var_x, a, b, c, d):
 
 
 # def power function
-def simu_logarithmic(var_x, a, b, c):
+def simu_power(var_x, a, b, c):
     var_x = np.array(var_x)
-    return a + b*np.power(var_x, c)
+    return a + b * np.power(var_x, c)
 
 
 # def exponential function
 def simu_exponential(var_x, a, b):
     var_x = np.array(var_x)
-    return a*np.exp(var_x)-b
+    return a * np.exp(var_x) + b
 
 
 # def Logarithmic functions
 def simu_logarithmic(var_x, a, b):
     var_x = np.array(var_x)
-    return a*np.log(var_x)+b
+    return a * np.log(var_x) + b
 
 
 # make simulation base on y_minus
 def simu_sigmoid(var_x, a, b, c):
+    var_x = np.array(var_x)
     return a / (1 + np.exp(-b * (var_x + c)))
+
+
+# calculate statistic parameters
+def fit_parameters(actual_y, fit_y):
+    # find nan values in predict y
+    nb_nan = sum(np.isnan(fit_y))
+    if nb_nan < 1:
+        # calculate mean square error
+        m_s_e = round(mean_squared_error(actual_y, fit_y), 3)
+        # calculate coefficient of determination or R^2
+        total_variance = sum(np.power(actual_y - np.mean(actual_y), 2))
+        predict_variance = sum(np.power(fit_y - np.mean(actual_y), 2))
+        r_square = round(predict_variance / total_variance, 3)
+        return m_s_e, r_square
+    else:
+        return np.inf, 0
 
 
 class FitModels:
@@ -69,13 +86,20 @@ class FitModels:
         self.simulate_y = []
         self.predict_x = None
         self.MSE = None
+        self.R_square = None
         self.params = []
         self.function_name = None
         self.function_type = None
         self.reverse_function = None
+        self.unable_predict = False
 
     def linear_regression(self):
-
+        """
+        # def linear function
+        def simu_linear(var_x, a, b):
+            var_x = np.array(var_x)
+            return a + (b * var_x)
+        """
         # get parameters by fitting real number
         params, pcov = curve_fit(simu_linear, self.x, self.y)
         # get round 2 of params
@@ -84,20 +108,26 @@ class FitModels:
         simulate_y = simu_linear(self.x, params[0], params[1])
         # generate regression curve data
         y_axis = simu_linear(self.x_axis, params[0], params[1])
-
-        # get mean square error of predict y and actual y
-        m_s_e = mean_squared_error(self.y, simulate_y)
+        # get mean square error and r_square
+        m_s_e, r_square = fit_parameters(self.y, simulate_y)
         # save records into self object
         self.function_name = "y={0}+({1}*x)".format(params[0], params[1])
         self.reverse_function = 'x = (y-{0})/{1}'.format(params[0], params[1])
         self.function_type = "linear"
         self.simulate_y = np.round(simulate_y, 3)
-        self.MSE = round(m_s_e, 3)
+        self.MSE = m_s_e
+        self.R_square = r_square
         self.params = params
         self.y_axis = y_axis
         return self
 
     def quadratic_regression(self):
+        """
+        # def quadratic function
+        def simu_quadratic(var_x, a, b, c):
+            var_x = np.array(var_x)
+            return a + (b * var_x) + (c * var_x ** 2)
+        """
         # get parameters by fitting real number
         params, pcov = curve_fit(simu_quadratic, self.x, self.y)
         # get round 2 of params
@@ -106,8 +136,8 @@ class FitModels:
         simulate_y = simu_quadratic(self.x, params[0], params[1], params[2])
         # generate serial predict y values
         y_axis = simu_quadratic(self.x_axis, params[0], params[1], params[2])
-        # get mean square error of predict y and actual y
-        m_s_e = mean_squared_error(self.y, simulate_y)
+        # get mean square error and r_square
+        m_s_e, r_square = fit_parameters(self.y, simulate_y)
         # save records into self object
         self.function_name = "y={0}+({1}*x)+({2}*x^2)".format(params[0],
                                                               params[1],
@@ -115,12 +145,20 @@ class FitModels:
         self.reverse_function = ''
         self.function_type = "quadratic"
         self.simulate_y = np.round(simulate_y, 3)
-        self.MSE = round(m_s_e, 3)
+        self.MSE = m_s_e
+        self.R_square = r_square
         self.params = params
         self.y_axis = y_axis
         return self
 
     def polynomial_regression(self):
+        """
+        # def polynomial function at ^3
+        def simu_poly(var_x, a, b, c, d):
+            var_x = np.array(var_x)
+            return a + (b * var_x) + (c * var_x ** 2) + (d * var_x ** 3)
+        """
+
         # get parameters by fitting real number
         params, pcov = curve_fit(simu_poly, self.x, self.y)
         # get round 3 of params
@@ -129,31 +167,40 @@ class FitModels:
         simulate_y = simu_poly(self.x, params[0], params[1], params[2], params[3])
         # generate serial predict y values
         y_axis = simu_poly(self.x_axis, params[0], params[1], params[2], params[3])
-        # get mean square error of predict y and actual y
-        m_s_e = mean_squared_error(self.y, simulate_y)
+        # get mean square error and r_square
+        m_s_e, r_square = fit_parameters(self.y, simulate_y)
         # save records into self object
         self.function_name = "y={0}+({1}*x)+({2}*x^2)+({3}*x^3)".format(params[0],
                                                                         params[1],
                                                                         params[2],
                                                                         params[3])
-        self.function_type = "poly_3"
+        self.function_type = "poly"
         self.simulate_y = np.round(simulate_y, 3)
-        self.MSE = round(m_s_e, 3)
+        self.MSE = m_s_e
+        self.R_square = r_square
         self.params = params
         self.y_axis = y_axis
         return self
 
     def power_regression(self):
+        """
+        # def power function
+        def simu_power(var_x, a, b, c):
+            var_x = np.array(var_x)
+            return a + b * np.power(var_x, c)
+        :return:
+        """
+
         # get parameters by fitting real number
-        params, pcov = curve_fit(simu_logarithmic, self.x, self.y)
+        params, pcov = curve_fit(simu_power, self.x, self.y)
         # get round 2 of params
         params = np.round(params, 3)
         # get predict y value by simulation function
-        simulate_y = simu_logarithmic(self.x, params[0], params[1], params[2])
+        simulate_y = simu_power(self.x, params[0], params[1], params[2])
         # generate serial predict y values
-        y_axis = simu_logarithmic(self.x_axis, params[0], params[1], params[2])
-        # get mean square error of predict y and actual y
-        m_s_e = mean_squared_error(self.y, simulate_y)
+        y_axis = simu_power(self.x_axis, params[0], params[1], params[2])
+        # get mean square error and r_square
+        m_s_e, r_square = fit_parameters(self.y, simulate_y)
         # save records into self object
         self.function_name = "y={0}+{1}*x^{2}".format(params[0],
                                                       params[1],
@@ -161,56 +208,83 @@ class FitModels:
         self.reverse_function = ''
         self.function_type = "power"
         self.simulate_y = np.round(simulate_y, 3)
-        self.MSE = round(m_s_e, 3)
+        self.MSE = m_s_e
+        self.R_square = r_square
         self.params = params
         self.y_axis = y_axis
         return self
 
     def exponential_regression(self):
+        """
+        # def exponential function
+        def simu_exponential(var_x, a, b):
+            var_x = np.array(var_x)
+            return a * np.exp(var_x) + b
+        :return:
+        """
+
         # get parameters by fitting real number
         params, pcov = curve_fit(simu_exponential, self.x, self.y)
         # get round 2 of params
         params = np.round(params, 3)
         # get predict y value by simulation function
-        simulate_y = simu_exponential(self.x, params[0], params[1], params[2])
+        simulate_y = simu_exponential(self.x, params[0], params[1])
         # generate serial predict y values
-        y_axis = simu_exponential(self.x_axis, params[0], params[1], params[2])
-        # get mean square error of predict y and actual y
-        m_s_e = mean_squared_error(self.y, simulate_y)
+        y_axis = simu_exponential(self.x_axis, params[0], params[1])
+        # get mean square error and r_square
+        m_s_e, r_square = fit_parameters(self.y, simulate_y)
         # save records into self object
-        self.function_name = "y = {0}+{1}*exp(x)".format(params[0],
+        self.function_name = "y = {0}*exp(x)+{1}".format(params[0],
                                                          params[1],)
         self.reverse_function = ''
         self.function_type = "exp"
         self.simulate_y = np.round(simulate_y, 3)
-        self.MSE = round(m_s_e, 3)
+        self.MSE = m_s_e
+        self.R_square = r_square
         self.params = params
         self.y_axis = y_axis
         return self
 
     def logarithmic_regression(self):
+        """
+        # def Logarithmic functions
+        def simu_logarithmic(var_x, a, b):
+            var_x = np.array(var_x)
+            return a * np.log(var_x) + b
+        :return:
+        """
+
         # get parameters by fitting real number
         params, pcov = curve_fit(simu_logarithmic, self.x, self.y)
         # get round 2 of params
         params = np.round(params, 3)
         # get predict y value by simulation function
-        simulate_y = simu_logarithmic(self.x, params[0], params[1], params[2])
+        simulate_y = simu_logarithmic(self.x, params[0], params[1])
         # generate serial predict y values
-        y_axis = simu_logarithmic(self.x_axis, params[0], params[1], params[2])
-        # get mean square error of predict y and actual y
-        m_s_e = mean_squared_error(self.y, simulate_y)
+        y_axis = simu_logarithmic(self.x_axis, params[0], params[1])
+        # get mean square error and r_square
+        m_s_e, r_square = fit_parameters(self.y, simulate_y)
         # save records into self object
         self.function_name = "y = {0}*In(x)+{1}".format(params[0],
                                                         params[1],)
         self.reverse_function = ''
-        self.function_type = "log(e)"
+        self.function_type = "log"
         self.simulate_y = np.round(simulate_y, 3)
-        self.MSE = round(m_s_e, 3)
+        self.MSE = m_s_e
+        self.R_square = r_square
         self.params = params
         self.y_axis = y_axis
         return self
 
     def sigmoid_regression(self):
+        """
+        # make simulation base on y_minus
+        def simu_sigmoid(var_x, a, b, c):
+            var_x = np.array(var_x)
+            return a / (1 + np.exp(-b * (var_x + c)))
+        :return:
+        """
+
         # minus min of y ,reduce calculation
         min_y = np.min(self.y)
         y_minus = np.array(self.y) - min_y
@@ -222,13 +296,14 @@ class FitModels:
         simulate_y = simu_sigmoid(self.x, params[0], params[1], params[2]) + min_y
         # generate serial predict y values
         y_axis = simu_sigmoid(self.x_axis, params[0], params[1], params[2]) + min_y
-        # get mean square error of predict y and actual y
-        m_s_e = mean_squared_error(self.y, simulate_y)
+        # get mean square error and r_square
+        m_s_e, r_square = fit_parameters(self.y, simulate_y)
         # save records into self object
         self.function_name = "y={0}/(1+exp(-{1}*(x+{2})))+{3}".format(params[0], params[1], params[2], min_y)
         self.function_type = "sigmoid"
         self.simulate_y = np.round(simulate_y, 3)
-        self.MSE = round(m_s_e, 3)
+        self.MSE = m_s_e
+        self.R_square = r_square
         self.params = params
         self.y_axis = y_axis
         return self
@@ -237,8 +312,11 @@ class FitModels:
         linear = FitModels(self.y, self.x).linear_regression()
         quadratic = FitModels(self.y, self.x).quadratic_regression()
         poly = FitModels(self.y, self.x).polynomial_regression()
+        power = FitModels(self.y, self.x).power_regression()
+        exp = FitModels(self.y, self.x).exponential_regression()
+        log = FitModels(self.y, self.x).logarithmic_regression()
         sigmoid = FitModels(self.y, self.x).sigmoid_regression()
-        mse_list = [linear.MSE, quadratic.MSE, poly.MSE, sigmoid.MSE]
+        mse_list = [linear.MSE, quadratic.MSE, poly.MSE, power.MSE, exp.MSE, log.MSE, sigmoid.MSE]
         print(mse_list)
         index_of_min = mse_list.index(min(mse_list))
         print(index_of_min)
@@ -249,10 +327,16 @@ class FitModels:
         elif index_of_min == 2:
             return poly
         elif index_of_min == 3:
+            return power
+        elif index_of_min == 4:
+            return exp
+        elif index_of_min == 5:
+            return log
+        elif index_of_min == 6:
             return sigmoid
         else:
-            print("smallest among three:", index_of_min)
-            raise TypeError
+            print("OUT OF function index:", index_of_min)
+            raise ValueError
 
     def predict_unknown(self, unknown_y):
         # predict x base on input unknown y
@@ -261,7 +345,7 @@ class FitModels:
         if self.unknown_y:
             fit_function = self.function_type
             left_domain = min(self.x)-1
-            right_domain = 2*max(self.x)
+            right_domain = 5*max(self.x)
             x_range = [left_domain, right_domain]
             if fit_function == 'linear':
                 reverse_function = inversefunc(simu_linear,
@@ -269,31 +353,56 @@ class FitModels:
                                                accuracy=3,
                                                domain=x_range,
                                                )
-            elif fit_function == 'poly_2':
+            elif fit_function == 'quadratic':
                 reverse_function = inversefunc(simu_quadratic,
                                                args=(self.params[0], self.params[1], self.params[2]),
                                                accuracy=3,
                                                domain=x_range,
                                                )
-            elif fit_function == 'poly_3':
+            elif fit_function == 'poly':
                 reverse_function = inversefunc(simu_poly,
                                                args=(self.params[0], self.params[1], self.params[2], self.params[3]),
                                                accuracy=3,
                                                domain=x_range,
                                                )
+            elif fit_function == 'power':
+                reverse_function = inversefunc(simu_power,
+                                               args=(self.params[0], self.params[1], self.params[2]),
+                                               accuracy=3,
+                                               domain=x_range,
+                                               )
+            elif fit_function == 'exp':
+                reverse_function = inversefunc(simu_exponential,
+                                               args=(self.params[0], self.params[1]),
+                                               accuracy=3,
+                                               domain=x_range,
+                                               )
+            elif fit_function == 'log':
+                reverse_function = inversefunc(simu_logarithmic,
+                                               args=(self.params[0], self.params[1]),
+                                               accuracy=3,
+                                               domain=x_range,
+                                               )
+
             elif fit_function == 'sigmoid':
                 reverse_function = inversefunc(simu_sigmoid,
                                                args=(self.params[0], self.params[1], self.params[2]),
                                                accuracy=3,
                                                domain=x_range,
                                                )
-                unknown_y = np.array(unknown_y)-np.min(self.y)
-                self.predict_x = np.round(reverse_function(unknown_y), 3)
+                try:
+                    unknown_y = np.array(unknown_y) - np.min(self.y)
+                    self.predict_x = np.round(reverse_function(unknown_y), 3)
+                    return self
+                except ValueError:
+                    self.unable_predict = True
             else:
-                print('Best regression :', fit_function)
-                # raise TypeError
-
-            self.predict_x = np.round(reverse_function(unknown_y), 3)
+                print('Wrong type of function:', fit_function)
+                raise TypeError
+            try:
+                self.predict_x = np.round(reverse_function(unknown_y), 3)
+            except ValueError:
+                self.unable_predict = True
         return self
 
 
@@ -316,7 +425,7 @@ def generate_result(fits, request):
     # color for curve
     curve_color = request.POST["curve_color"]
     print("load request success")
-    title = "Function: " + fits.function_name + "  MSE: %0.3f" % round(fits.MSE, 3)
+    title = "Function: " + fits.function_name + "  MSE: %0.3f" % fits.MSE + " R^2 :%0.3f" % fits.R_square
     # get 20% interval for x and y
     inv_x = (max(x) - min(x)) * 0.2
     inv_y = (max(y) - min(y)) * 0.2
@@ -390,47 +499,89 @@ def test():
           fits.function_name, '\n',
           fits.params, '\n',
           fits.MSE, '\n',
+          fits.R_square, '\n',
           fits.simulate_y, '\n',
           )
 
-    linear = fits.linear_regression()
-    linear.predict_unknown(unknown_y)
-    print("linear \n",
-          linear.function_name, '\n',
-          linear.params, '\n',
-          linear.MSE, '\n',
-          linear.simulate_y, '\n',
-          linear.predict_x, '\n',
+    fits = FitModels(y, x).linear_regression()
+    fits.predict_unknown(unknown_y)
+    print("linear fits: \n",
+          fits.function_name, '\n',
+          fits.params, '\n',
+          fits.MSE, '\n',
+          fits.R_square, '\n',
+          fits.simulate_y, '\n',
+          fits.predict_x, '\n',
           )
-
-    poly = fits.polynomial_regression()
-    poly.predict_unknown(unknown_y)
-    print("poly \n",
-          poly.function_name, '\n',
-          poly.params, '\n',
-          poly.MSE, '\n',
-          poly.simulate_y, '\n',
-          poly.predict_x, '\n',
+    fits = FitModels(y, x).quadratic_regression()
+    fits.predict_unknown(unknown_y)
+    print("quadratic fits: \n",
+          fits.function_name, '\n',
+          fits.params, '\n',
+          fits.MSE, '\n',
+          fits.R_square, '\n',
+          fits.simulate_y, '\n',
+          fits.predict_x, '\n',
           )
-
-    sigmoid = fits.sigmoid_regression()
-    # sigmoid.predict_unknown(unknown_y)
-    print("sigmoid \n",
-          sigmoid.function_name, '\n',
-          sigmoid.params, '\n',
-          sigmoid.MSE, '\n',
-          sigmoid.simulate_y, '\n',
-          sigmoid.predict_x, '\n',
+    fits = FitModels(y, x).polynomial_regression()
+    fits.predict_unknown(unknown_y)
+    print("polynomial fits: \n",
+          fits.function_name, '\n',
+          fits.params, '\n',
+          fits.MSE, '\n',
+          fits.R_square, '\n',
+          fits.simulate_y, '\n',
+          fits.predict_x, '\n',
           )
-
-    all_three = fits.all_regression()
-    all_three.predict_unknown(unknown_y)
-    print("all three \n",
-          all_three.function_name, '\n',
-          all_three.params, '\n',
-          all_three.MSE, '\n',
-          all_three.simulate_y, '\n',
-          all_three.predict_x, '\n',
+    fits = FitModels(y, x).power_regression()
+    fits.predict_unknown(unknown_y)
+    print("power fits: \n",
+          fits.function_name, '\n',
+          fits.params, '\n',
+          fits.MSE, '\n',
+          fits.R_square, '\n',
+          fits.simulate_y, '\n',
+          fits.predict_x, '\n',
+          )
+    fits = FitModels(y, x).exponential_regression()
+    # fits.predict_unknown(unknown_y)
+    print("exponential fits: \n",
+          fits.function_name, '\n',
+          fits.params, '\n',
+          fits.MSE, '\n',
+          fits.R_square, '\n',
+          fits.simulate_y, '\n',
+          fits.predict_x, '\n',
+          )
+    fits = FitModels(y, x).logarithmic_regression()
+    fits.predict_unknown(unknown_y)
+    print("logarithmic fits: \n",
+          fits.function_name, '\n',
+          fits.params, '\n',
+          fits.MSE, '\n',
+          fits.R_square, '\n',
+          fits.simulate_y, '\n',
+          fits.predict_x, '\n',
+          )
+    fits = FitModels(y, x).sigmoid_regression()
+    # fits.predict_unknown(unknown_y)
+    print("sigmoid fits: \n",
+          fits.function_name, '\n',
+          fits.params, '\n',
+          fits.MSE, '\n',
+          fits.R_square, '\n',
+          fits.simulate_y, '\n',
+          fits.predict_x, '\n',
+          )
+    fits = FitModels(y, x).all_regression()
+    fits.predict_unknown(unknown_y)
+    print("all fits: \n",
+          fits.function_name, '\n',
+          fits.params, '\n',
+          fits.MSE, '\n',
+          fits.R_square, '\n',
+          fits.simulate_y, '\n',
+          fits.predict_x, '\n',
           )
 
 
