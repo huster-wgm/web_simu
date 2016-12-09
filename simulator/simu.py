@@ -427,7 +427,10 @@ def generate_result(fits, request):
         inv_x = 0
     if inv_y < 1:
         inv_y = 0
-
+    if inv_x > 2:
+        inv_x = 2
+    if inv_y > 2:
+        inv_y = 2
     ##############
 
     p = figure(responsive=True, plot_width=750, plot_height=450,

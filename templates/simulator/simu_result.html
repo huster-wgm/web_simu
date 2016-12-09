@@ -85,23 +85,26 @@
     <fieldset class="scheduler-border">
         <legend> <h1>Standard Curve</h1></legend>
         <h3><b> Input Data :</b></h3>
-            <textarea class="form-control" rows="3">
-                x_axis_values: {{fit.x}}
-                y_axis_values: {{fit.y }}
+            <textarea class="form-control" rows="3" style="font-size:20px;">
+                x_axis_values: {{ fit.x }}
+                y_axis_values: {{ fit.y }}
             </textarea>
-        <label> Mean_square_error : </label> <span class="badge">{{ fit.MSE }}</span>
+        <h3><b> Mean_square_error : </b></h3>
+            <textarea class="form-control" rows="1" style="font-size:20px;">{{ fit.MSE }}</textarea>
         <br>
-        <label> R_square : : </label> <span class="badge"> {{ fit.R_square }} </span>
+        <h3><b> R_square : </b></h3>
+            <textarea class="form-control" rows="1" style="font-size:20px;">{{ fit.R_square }}</textarea>
       {% if fit.unable_predict %}
         <h3><b> Predicted result :</b></h3>
-            <textarea class="form-control" rows="2">
+            <textarea class="form-control" rows="2" style="font-size:20px;">
                 {{ error_message }}
             </textarea>
       {% else %}
         <h3><b> Predicted result :</b></h3>
-            <textarea class="form-control" rows="3">
-                unknown_y_values: {{ fit.unknown_y }}
-                predict_x_values: {{ fit.predict_x }}
+            <textarea class="form-control" rows="4" style="font-size:20px;">
+             Regression Function:   {{ fit.function_name}}
+                unknown_y_values:   {{ fit.unknown_y }}
+                predict_x_values:   {{ fit.predict_x }}
             </textarea>
       {% endif %}
     </fieldset>
