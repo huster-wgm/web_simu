@@ -427,9 +427,10 @@ def generate_result(fits, request):
         inv_x = 0
     if inv_y < 1:
         inv_y = 0
+
     ##############
 
-    p = figure(width=1000, height=600,
+    p = figure(responsive=True, plot_width=750, plot_height=450,
                x_range=[int(min(x) - inv_x), int(max(x) + inv_x)+1],
                y_range=[int(min(y) - inv_y), int(max(y) + inv_y)+1],
                x_axis_label=x_axis_label,

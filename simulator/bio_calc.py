@@ -32,7 +32,7 @@ def create_freq_map(df):
     )
 
     TOOLS = "hover,save,pan,box_zoom,wheel_zoom,reset"
-    p = figure(responsive=True, plot_width=800, plot_height=400,
+    p = figure(responsive=True, plot_width=750, plot_height=400,
                x_range=(0, df.shape[0]+2), tools=TOOLS)
     # add a line renderer
     p.line(x='position', y='optimal_freq',
