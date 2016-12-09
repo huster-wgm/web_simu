@@ -2,11 +2,7 @@ import numpy as np
 from scipy.optimize import curve_fit
 from sklearn.metrics import mean_squared_error
 from bokeh.plotting import figure
-from bokeh.layouts import widgetbox, row
-from bokeh.models import ColumnDataSource
-from bokeh.models.widgets import DataTable, TableColumn
-from bokeh.resources import CDN
-from bokeh.embed import file_html
+from bokeh.embed import components
 from pynverse import inversefunc
 
 
@@ -54,9 +50,10 @@ def simu_sigmoid(var_x, a, b, c):
 
 # calculate statistic parameters
 def fit_parameters(actual_y, fit_y):
-    # find nan values in predict y
+    # find nan values and infinite values in predict y
     nb_nan = sum(np.isnan(fit_y))
-    if nb_nan < 1:
+    nb_inf = sum(np.isinf(fit_y))
+    if nb_nan < 1 and nb_inf < 1:
         # calculate mean square error
         m_s_e = round(mean_squared_error(actual_y, fit_y), 3)
         # calculate coefficient of determination or R^2
@@ -345,7 +342,7 @@ class FitModels:
         if self.unknown_y:
             fit_function = self.function_type
             left_domain = min(self.x)-1
-            right_domain = 5*max(self.x)
+            right_domain = None
             x_range = [left_domain, right_domain]
             if fit_function == 'linear':
                 reverse_function = inversefunc(simu_linear,
@@ -411,9 +408,6 @@ def generate_result(fits, request):
     # notice that np.round() don't work
     x = fits.x
     y = fits.y
-    simulate_y = fits.simulate_y
-    predict_x = fits.predict_x
-    unknown_y = fits.unknown_y
     # name of x_axis
     x_axis_label = request.POST["x_axis"]
     # name of y_axis
@@ -425,7 +419,7 @@ def generate_result(fits, request):
     # color for curve
     curve_color = request.POST["curve_color"]
     print("load request success")
-    title = "Function: " + fits.function_name + "  MSE: %0.3f" % fits.MSE + " R^2 :%0.3f" % fits.R_square
+    title = "Function: %s " % fits.function_name + "        R^2 : %0.3f" % fits.R_square
     # get 20% interval for x and y
     inv_x = (max(x) - min(x)) * 0.2
     inv_y = (max(y) - min(y)) * 0.2
@@ -435,7 +429,7 @@ def generate_result(fits, request):
         inv_y = 0
     ##############
 
-    p = figure(width=800, height=600,
+    p = figure(width=1000, height=600,
                x_range=[int(min(x) - inv_x), int(max(x) + inv_x)+1],
                y_range=[int(min(y) - inv_y), int(max(y) + inv_y)+1],
                x_axis_label=x_axis_label,
@@ -461,7 +455,7 @@ def generate_result(fits, request):
     p.ygrid.grid_line_color = None
     p.xaxis.axis_label_text_font_size = "20pt"
     p.yaxis.axis_label_text_font_size = "20pt"
-
+    """
     # create standard data widgets
     standard = {'x': x, 'y': y}
     standard_source = ColumnDataSource(standard)
@@ -482,11 +476,11 @@ def generate_result(fits, request):
 
     unknown_table = DataTable(source=unknown_source, columns=unknown_columns, width=350, height=300)
     widgets = widgetbox(standard_table, unknown_table, width=400)
-
     # put the results in a row
     p = row(widgets, p)
-    html = file_html(p, CDN, "result")
-    return html
+    """
+    the_script, the_div = components(p)
+    return the_script, the_div
 
 
 def test():

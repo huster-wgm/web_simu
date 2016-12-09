@@ -128,15 +128,17 @@ def simulation_result(request):
         elif fit.unable_predict:
             print('failed to predict unknown y .')
             # save error message in context
-            context = {'error_line_1': 'Failed to predict unknown y using current function.',
-                       'error_line_2': 'Change regression function type \
-                                        or try all regression method'}
-            return render(request, 'simulator/error.html', context)
+            error_message = 'Failed to predict unknown y using current function. Please change regression function ' \
+                            'type or try all regression method '
+            script, div = generate_result(fit, request)
+            context = {'fit': fit, 'script': script, 'div': div, 'error_message': error_message}
+            return render(request, 'simulator/simu_result.html', context)
         else:
             print('succeed in generating html.')
-            # generate html result
-            html = generate_result(fit, request)
-            return HttpResponse(html)
+            # generate html components
+            script, div = generate_result(fit, request)
+            context = {'fit': fit, 'script': script, 'div': div}
+            return render(request, 'simulator/simu_result.html', context)
 
 
 def bio_calculator(request):
