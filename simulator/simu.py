@@ -58,8 +58,8 @@ def fit_parameters(actual_y, fit_y):
         m_s_e = round(mean_squared_error(actual_y, fit_y), 3)
         # calculate coefficient of determination or R^2
         total_variance = sum(np.power(actual_y - np.mean(actual_y), 2))
-        predict_variance = sum(np.power(fit_y - np.mean(actual_y), 2))
-        r_square = round(predict_variance / total_variance, 3)
+        print('VARIANCE :', total_variance)
+        r_square = 1.0 - round(m_s_e*len(actual_y) / total_variance, 3)
         return m_s_e, r_square
     else:
         return np.inf, 0

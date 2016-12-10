@@ -1,7 +1,6 @@
 from .simu import FitModels, generate_result
 from .bio_calc import BioCalculator, create_freq_map
 from django.shortcuts import render
-from django.http import HttpResponse
 import pandas as pd
 
 
@@ -128,7 +127,7 @@ def simulation_result(request):
         elif fit.unable_predict:
             print('failed to predict unknown y .')
             # save error message in context
-            error_message = 'Failed to predict unknown y using current function. Please change regression function ' \
+            error_message = 'Failed to predict unknown y using current function.  Please change regression function ' \
                             'type or try all regression method '
             script, div = generate_result(fit, request)
             context = {'fit': fit, 'script': script, 'div': div, 'error_message': error_message}

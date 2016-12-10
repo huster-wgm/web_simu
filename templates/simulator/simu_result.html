@@ -83,29 +83,63 @@
   {% if fit.R_square != 0 %}
   <div class="container">
     <fieldset class="scheduler-border">
-        <legend> <h1>Standard Curve</h1></legend>
+        <legend> <h1>Simulation Result</h1></legend>
         <h3><b> Input Data :</b></h3>
-            <textarea class="form-control" rows="3" style="font-size:20px;">
-                x_axis_values: {{ fit.x }}
-                y_axis_values: {{ fit.y }}
+        <table class="table">
+          <thead>
+            <tr>
+              <th># Standard </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">Standard X:</th>
+            {% for i in fit.x %}
+              <th>{{i}}</th>
+            {% endfor %}
+            </tr>
+            <tr>
+              <th scope="row">Standard Y:</th>
+            {% for i in fit.y %}
+              <th>{{i}}</th>
+            {% endfor %}
+            </tr>
+          </tbody>
+        </table>
+        <h3><b> Regression result :</b></h3>
+        <textarea class="form-control" rows="3" style="font-size:20px;">
+            Regression Function :   {{ fit.function_name}}
+             Mean_square_error :   {{ fit.MSE }}
+                             R_square :   {{ fit.R_square }}
             </textarea>
-        <h3><b> Mean_square_error : </b></h3>
-            <textarea class="form-control" rows="1" style="font-size:20px;">{{ fit.MSE }}</textarea>
-        <br>
-        <h3><b> R_square : </b></h3>
-            <textarea class="form-control" rows="1" style="font-size:20px;">{{ fit.R_square }}</textarea>
       {% if fit.unable_predict %}
         <h3><b> Predicted result :</b></h3>
             <textarea class="form-control" rows="2" style="font-size:20px;">
                 {{ error_message }}
             </textarea>
       {% else %}
-        <h3><b> Predicted result :</b></h3>
-            <textarea class="form-control" rows="4" style="font-size:20px;">
-             Regression Function:   {{ fit.function_name}}
-                unknown_y_values:   {{ fit.unknown_y }}
-                predict_x_values:   {{ fit.predict_x }}
-            </textarea>
+        <h3><b> Output result :</b></h3>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th># Prediction </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row">Unknown Y:</th>
+                {% for i in fit.unknown_y %}
+                  <th>{{i}}</th>
+                {% endfor %}
+                </tr>
+                <tr>
+                  <th scope="row">Predict X:</th>
+                {% for i in fit.predict_x %}
+                  <th>{{i}}</th>
+                {% endfor %}
+                </tr>
+              </tbody>
+            </table>
       {% endif %}
     </fieldset>
     <br>
