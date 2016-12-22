@@ -51,8 +51,8 @@ def simulation_result(request):
         # change string to list
         standard = standard.replace("\r", "").split('\n')
         unknown = unknown.replace("\r", "").split('\n')
-        print('type of standard and unknown', type(standard), type(unknown))
-        print(standard, unknown)
+        # print('type of standard and unknown', type(standard), type(unknown))
+        # print(standard, unknown)
         standard_x, standard_y = [], []
         for i in standard:
             if i:
@@ -118,7 +118,7 @@ def simulation_result(request):
         else:
             raise ValueError
         if fit.R_square == 0:
-            print('failed in fitting using current function.')
+            # print('failed in fitting using current function.')
             # save error message in context
             context = {'error_line_1': 'Failed in fitting using current function.',
                        'error_line_2': 'Change regression function type \
@@ -133,7 +133,7 @@ def simulation_result(request):
             context = {'fit': fit, 'script': script, 'div': div, 'error_message': error_message}
             return render(request, 'simulator/simu_result.html', context)
         else:
-            print('succeed in generating html.')
+            # print('succeed in generating html.')
             # generate html components
             script, div = generate_result(fit, request)
             context = {'fit': fit, 'script': script, 'div': div}
@@ -153,6 +153,7 @@ def bio_result(request):
     if request.POST['submit'] == 'DNA_Calc':
         seq_type = request.POST["seq_type"]
         seq = request.POST['seq']
+        seq = seq.upper()
         if request.POST['optimized'] != 'no':
             optimized = True
             optimized_method = request.POST['optimized']
