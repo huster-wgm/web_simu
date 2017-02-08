@@ -1,5 +1,6 @@
 from .simu import FitModels, generate_result
 from .bio_calc import BioCalculator, create_freq_map
+from .congestion_map import data_by_time, df_to_geojson
 from django.shortcuts import render
 import pandas as pd
 
@@ -142,6 +143,14 @@ def simulation_result(request):
 
 def bio_calculator(request):
     return render(request, 'simulator/bio_calculators.html')
+
+
+def congestion(request):
+    extract_records = data_by_time(0)
+    geo_property = ['speed', 'counts']
+    geojson = df_to_geojson(extract_records, geo_property)
+    context = {'data': geojson}
+    return render(request, 'simulator/congestion.html', context)
 
 
 # return result of bio_calculators

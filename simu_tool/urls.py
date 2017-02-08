@@ -25,7 +25,7 @@ from wagtail.wagtailcore import urls as wagtail_urls
 
 
 urlpatterns = [
-    url(r'^',include('blog.urls')),
+    url(r'^', include('blog.urls')),
     url(r'^simulator/', include('simulator.urls')),
     url(r'^admin', include(wagtailadmin_urls)),
     url(r'^posts/', include(wagtail_urls)),

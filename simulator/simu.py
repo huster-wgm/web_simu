@@ -58,7 +58,6 @@ def fit_parameters(actual_y, fit_y):
         m_s_e = round(mean_squared_error(actual_y, fit_y), 3)
         # calculate coefficient of determination or R^2
         total_variance = sum(np.power(actual_y - np.mean(actual_y), 2))
-        print('VARIANCE :', total_variance)
         r_square = 1.0 - round(m_s_e*len(actual_y) / total_variance, 3)
         return m_s_e, r_square
     else:
@@ -108,7 +107,10 @@ class FitModels:
         # get mean square error and r_square
         m_s_e, r_square = fit_parameters(self.y, simulate_y)
         # save records into self object
-        self.function_name = "y={0}+({1}*x)".format(params[0], params[1])
+        if params[1] > 0:
+            self.function_name = "y={0}+({1}*x)".format(params[0], params[1])
+        else:
+            self.function_name = "y={0}-({1}*x)".format(params[0], abs(params[1]))
         self.reverse_function = 'x = (y-{0})/{1}'.format(params[0], params[1])
         self.function_type = "linear"
         self.simulate_y = np.round(simulate_y, 3)
@@ -341,7 +343,8 @@ class FitModels:
         self.unknown_y = unknown_y
         if self.unknown_y:
             fit_function = self.function_type
-            left_domain = min(self.x)-1
+            # left_domain = min(self.x)-(max(self.x)-min(self.x))/2
+            left_domain = None
             right_domain = None
             x_range = [left_domain, right_domain]
             if fit_function == 'linear':
@@ -389,6 +392,7 @@ class FitModels:
                                                )
                 try:
                     unknown_y = np.array(unknown_y) - np.min(self.y)
+                    print('x-RANGE:', x_range)
                     self.predict_x = np.round(reverse_function(unknown_y), 3)
                     return self
                 except ValueError:
@@ -399,6 +403,7 @@ class FitModels:
             try:
                 self.predict_x = np.round(reverse_function(unknown_y), 3)
             except ValueError:
+                print('x-RANGE:', x_range)
                 self.unable_predict = True
         return self
 

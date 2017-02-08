@@ -11,7 +11,7 @@
     <title>Simulator</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="{% static 'bootstrap/css/bootstrap.min.css'  %}"rel="stylesheet">
+    <link href="{% static 'bootstrap/css/bootstrap.min.css'  %}" rel="stylesheet">
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -58,8 +58,9 @@
     <div class="container">
         <div  class="col-lg-4">
            <h1><b>Introduction</b></h1>
-            <p>This is a simple tool for basic simulation task.</br>Currently, it support linear,
-              polynomial and sigmoid function.
+            <p>This is a simple tool for simulation tasks.</br>
+              Currently, it support linear, quadratic, polynomial, power,<br>
+              exponential, logarithmic and sigmoid function.
             </p>
        </div>
     </div>
@@ -68,9 +69,9 @@
     <form action="./simu_result" method="post" enctype="multipart/form-data" >{% csrf_token %}
       <fieldset class="scheduler-border text-center" >
         <legend> Input Data </legend>
-        <label class="badge" > <b><h4>Standard X and Y:</h4></b> </label>
+        <label class="badge"> <h4>Standard X and Y:</h4> </label>
           <textarea type ='text' name='standard' class="form-control" rows="4" placeholder="Standard DATA(Make sure they are Space separated!)" required ></textarea>
-        <label class="badge"> <b><h4>Unknown Y:</h4></b> </label>
+        <label class="badge"> <h4>Unknown Y:</h4> </label>
         <textarea type ='text' name='unknown' class="form-control" rows="4" placeholder="Unknown DATA" required ></textarea>
       </fieldset>
       <br/>
@@ -119,7 +120,7 @@
               <option value="black"><b>black</b></option>
             </select>
       </fieldset>
-      <input type="submit" value="Submit"class="btn btn-primary">
+      <input type="submit" value="Submit" class="btn btn-primary">
     </form>
   </div>
     <!-- Bootstrap core JavaScript
