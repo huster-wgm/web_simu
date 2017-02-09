@@ -1,6 +1,5 @@
 import pandas as pd
 import numpy as np
-import json
 import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
@@ -78,7 +77,6 @@ def df_to_geojson(df, properties, feature_type='Point'):
         # add this feature
         geojson['features'].append(feature)
     # convert geojson dict to str
-    # geojson = json.dumps(geojson)
     return geojson
 
 

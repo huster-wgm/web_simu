@@ -8,7 +8,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Simulation-Results</title>
+    <title>Bio-Results</title>
 
     <!-- Bootstrap core CSS -->
     <link href="{% static 'bootstrap/css/bootstrap.min.css'  %}" rel="stylesheet">
@@ -29,8 +29,8 @@
         href="http://cdn.pydata.org/bokeh/release/bokeh-widgets-0.12.0.min.css"
         rel="stylesheet" type="text/css">
     <!-- bokeh js -->
-    <script src="http://cdn.pydata.org/bokeh/release/bokeh-0.12.0.min.js"></script>
-    <script src="http://cdn.pydata.org/bokeh/release/bokeh-widgets-0.12.0.min.js"></script>
+    <script src="http://cdn.pydata.org/bokeh/release/bokeh-0.12.3.min.js"></script>
+    <script src="http://cdn.pydata.org/bokeh/release/bokeh-widgets-0.12.3.min.js"></script>
 
   </head>
 
@@ -55,9 +55,9 @@
               <a class="navbar-brand" href="#"><b>Bio-calculators</b></a>
               <div id="navbar" class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                  <li><a href="../../portfolio">Portfolios</a></li>
-                  <li><a href="../simulator/simulator">Simulator</a></li>
-                  <li class="active"><a href="">Simulation results</a></li>
+                  <li><a href="../portfolios">Portfolios</a></li>
+                  <li><a href="../portfolios/bio_calculator">Bio-calculators</a></li>
+                  <li class="active"><a href="">Results</a></li>
                 </ul>
               </div>
             </div>
@@ -79,79 +79,62 @@
 
 
 
+    <div class="container">
+      {% if calc.seq_type == 'DNA' %}
+        <fieldset class="scheduler-border">
+            <legend> <h1>DNA Information</h1></legend>
+            <h3><b> DNA Sequence :</b></h3>
+                <textarea class="form-control" rows="4">{{ calc.dna_seq }}</textarea>
+          {% if calc.optimal_seq %} 
+            <h3><b> Optimized DNA Sequence :</b></h3>
+                <textarea class="form-control" rows="4">{{ calc.optimal_seq }}</textarea>   
+          {% endif %}      
+            <h3><b> DNA length :</b></h3>
+                <p>{{ calc.dna_len }} bp</p> 
+            <h3><b> DNA molecular weight :</b></h3>
+                <p>{{ calc.dna_mw }} g/mol </p> 
+            <h3><b> DNA GC_ratio :</b></h3>
+                <p>{{ calc.gc_rate }} % </p> 
+            <h3><b> Number of Stop codon :</b></h3>
+                <p>{{ calc.nb_stop }} </p> 
+        </fieldset>
 
-  {% if fit.R_square != 0 %}
-  <div class="container">
-    <fieldset class="scheduler-border">
-        <legend><h1> Simulation Result </h1></legend>
-        <h3><b> Input Data :</b></h3>
-        <table class="table">
-          <thead>
-            <tr>
-              <th># Standard </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <th scope="row">Standard X:</th>
-            {% for i in fit.x %}
-              <th>{{i}}</th>
-            {% endfor %}
-            </tr>
-            <tr>
-              <th scope="row">Standard Y:</th>
-            {% for i in fit.y %}
-              <th>{{i}}</th>
-            {% endfor %}
-            </tr>
-          </tbody>
-        </table>
-        <h3><b> Regression result :</b></h3>
-        <textarea class="form-control" rows="3" style="font-size:20px;">
-            Regression Function :   {{ fit.function_name}}
-             Mean_square_error :   {{ fit.MSE }}
-                             R_square :   {{ fit.R_square }}
-            </textarea>
-      {% if fit.unable_predict %}
-        <h3><b> Predicted result :</b></h3>
-            <textarea class="form-control" rows="2" style="font-size:20px;">
-                {{ error_message }}
-            </textarea>
-      {% else %}
-        <h3><b> Output result :</b></h3>
-            <table class="table">
-              <thead>
-                <tr>
-                  <th># Prediction </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <th scope="row">Unknown Y:</th>
-                {% for i in fit.unknown_y %}
-                  <th>{{i}}</th>
-                {% endfor %}
-                </tr>
-                <tr>
-                  <th scope="row">Predict X:</th>
-                {% for i in fit.predict_x %}
-                  <th>{{i}}</th>
-                {% endfor %}
-                </tr>
-              </tbody>
-            </table>
       {% endif %}
-    </fieldset>
-    <br>
-    <br>
-    <div class="container-fluid">
-      {{ script | safe }}
-      {{ div | safe }}
+
+      {% if calc.refer_freq %}
+         <div class="container-fluid">
+          {{ script | safe }}
+          {{ div | safe }}
+         </div> 
+      {% endif %}
+      
+      <fieldset class="scheduler-border">
+          <legend> <h1>Protein Information</h1></legend>
+          <h3><b>Protein sequence (* for Stop codon) :</b></h3>
+              <textarea class="form-control" rows="4">{{ calc.aa_seq }}</textarea>
+          <h3><b> Amino_acid length (- Stop codon) :</b></h3>
+              <p>{{ calc.aa_len }} aa </p>
+          <h3><b>Protein molecular weight :</b></h3>
+              <p>{{ calc.aa_mw }} g/mol </p> 
+          <h3><b>Protein absorbance coefficence :</b></h3>
+              <p>{{ calc.abs_coeff }} /(M*cm) </p> 
+          <h3><b>Total number of Met :</b></h3>
+              <p>{{ calc.nb_met }}  </p>     
+          <h3><b>All Amino acid components :</b></h3>
+              <textarea class="form-control" rows="2" style="font-size:20px">{{ calc.aa_components }}</textarea> 
+        {% if calc.pro_con %}
+          <h3><b> Dilution factor :</b></h3>
+              <p>{{ calc.dilution }} </p> 
+          <h3><b>Protein concentration :</b></h3>
+              <p>{{ calc.molar_con }}  μM </p>
+              <br>
+              <p>{{ calc.pro_con }}  mg/ml</p>         
+        {% endif %} 
+      </fieldset>
+
     </div>
-  {% endif %}
-  </div>
-
-
+    
+  
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->

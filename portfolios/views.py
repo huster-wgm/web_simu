@@ -1,4 +1,4 @@
-from .simu import FitModels, generate_result
+from .simulator import FitModels, generate_result
 from .bio_calc import BioCalculator, create_freq_map
 from .congestion_map import data_by_time, df_to_geojson
 from django.shortcuts import render
@@ -8,22 +8,18 @@ import pandas as pd
 def file_format(request, file):
     file_name = str(file)
     if not file_name.endswith('.csv'):
-        return render(request, 'simulator/error.html')
-
-
-def forms(request):
-    return render(request, 'simulator/forms.html')
+        return render(request, 'portfolios/error.html')
 
 
 def simulator(request):
-    return render(request, 'simulator/simulator.html')
+    return render(request, 'portfolios/simulator.html')
 
 
-# return result of simulator
+# return result of portfolios
 def simulation_result(request):
     if request.method == "GET":
         print("request method == 'GET'")
-        return render(request, 'simulator/error.html')
+        return render(request, 'portfolios/error.html')
     else:
         '''
         # read personal data from upload csv file
@@ -124,7 +120,7 @@ def simulation_result(request):
             context = {'error_line_1': 'Failed in fitting using current function.',
                        'error_line_2': 'Change regression function type \
                                         or try all regression method'}
-            return render(request, 'simulator/error.html', context)
+            return render(request, 'portfolios/error.html', context)
         elif fit.unable_predict:
             print('failed to predict unknown y .')
             # save error message in context
@@ -132,17 +128,17 @@ def simulation_result(request):
                             'type or try all regression method '
             script, div = generate_result(fit, request)
             context = {'fit': fit, 'script': script, 'div': div, 'error_message': error_message}
-            return render(request, 'simulator/simu_result.html', context)
+            return render(request, 'portfolios/simu_result.html', context)
         else:
             # print('succeed in generating html.')
             # generate html components
             script, div = generate_result(fit, request)
             context = {'fit': fit, 'script': script, 'div': div}
-            return render(request, 'simulator/simu_result.html', context)
+            return render(request, 'portfolios/simu_result.html', context)
 
 
 def bio_calculator(request):
-    return render(request, 'simulator/bio_calculators.html')
+    return render(request, 'portfolios/bio_calculators.html')
 
 
 def congestion(request):
@@ -150,7 +146,7 @@ def congestion(request):
     geo_property = ['speed', 'counts']
     geojson = df_to_geojson(extract_records, geo_property)
     context = {'data': geojson}
-    return render(request, 'simulator/congestion.html', context)
+    return render(request, 'portfolios/congestion.html', context)
 
 
 # return result of bio_calculators
@@ -206,4 +202,4 @@ def bio_result(request):
     else:
         context = {'calc': calc}
 
-    return render(request, 'simulator/calc_result.html', context)
+    return render(request, 'portfolios/calc_result.html', context)

@@ -15,8 +15,10 @@ from modelcluster.contrib.taggit import ClusterTaggableManager
 from taggit.models import TaggedItemBase
 from markdown import markdown
 
+
 class PageTag(TaggedItemBase):
     content_object = ParentalKey('blog.Post', related_name='tagged_items')
+
 
 class MarkDownBlock(blocks.TextBlock):
     """ MarkDown Block """
@@ -34,18 +36,18 @@ class MarkDownBlock(blocks.TextBlock):
         )
         return mark_safe(md)
 
+
 class Post(Page):
     tags = ClusterTaggableManager(through=PageTag, blank=True)
-
 
     intro = models.CharField(max_length=250)
     body = StreamField([
         ('heading', blocks.CharBlock(classname="full title")),
         ('paragraph', blocks.RichTextBlock()),
         ('image', ImageChooserBlock()),
-        ('Html_code',blocks.RawHTMLBlock()),
-        ('Embed',EmbedBlock()),
-        ('Markdown',MarkDownBlock()),
+        ('Html_code', blocks.RawHTMLBlock()),
+        ('Embed', EmbedBlock()),
+        ('Markdown', MarkDownBlock()),
     ])
 
     search_fields = Page.search_fields + [
