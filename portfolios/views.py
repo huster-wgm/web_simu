@@ -141,14 +141,6 @@ def bio_calculator(request):
     return render(request, 'portfolios/bio_calculators.html')
 
 
-def congestion(request):
-    extract_records = data_by_time(0)
-    geo_property = ['speed', 'counts']
-    geojson = df_to_geojson(extract_records, geo_property)
-    context = {'data': geojson}
-    return render(request, 'portfolios/congestion.html', context)
-
-
 # return result of bio_calculators
 def bio_result(request):
     # using DNA calculator
@@ -203,3 +195,11 @@ def bio_result(request):
         context = {'calc': calc}
 
     return render(request, 'portfolios/calc_result.html', context)
+
+
+def congestion(request):
+    extract_records = data_by_time(0)
+    geo_property = ['speed', 'counts']
+    geojson = df_to_geojson(extract_records, geo_property)
+    context = {'data': geojson}
+    return render(request, 'portfolios/congestion.html', context)

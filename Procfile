@@ -1,1 +1,1 @@
-web: gunicorn simu_tool.wsgi --log-file -
+web: gunicorn django_Apps.wsgi --log-file -
