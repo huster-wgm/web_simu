@@ -14,7 +14,7 @@
 			        height:100%
 			    }
 			#mapid{
-				margin: 2% auto;
+				margin: 10px auto;
 				width: 70%;
 				height: 70%;
 			}
@@ -37,31 +37,73 @@
 			    margin-right: 5px;
 			    opacity: 0.7;
 			}
+			#clock{
+				height:60px;
+				width: 200px;
+				margin: 5px auto;
+				text-align: center;
+				font-size: 60px;
+				color: black;
+				background-color: #80d4ea;
+			}
+			#control{
+				height:25px;
+				width: 100px;
+				margin: 5px auto;
+				display: block;
+				font-size: 20px;
+				text-align: center;
+			}
 		</style>
 	</head>
 	<body>
 		<h1 style="text-align:center">Congestion map for Bangkok</h1>
+		<div id='clock'></div>
+  			<input type="button" id='control' value ='Autoplay'>
 		<div id="mapid"></div>
 		<script>
+			var hour = 0;
+			var min = 0;
+			var time_id = 0;
+			function getTime(){
+				if (realTime){
+					var now = new Date();
+					var _hour = now.getHours();
+					var _min = now.getMinutes();
+					if(_min<20){
+						time_id = _hour*2;
+					}else if(_min<40){
+						time_id = _hour*2+1;
+					}else{
+						time_id = _hour*2+2;
+					}
+				}else if(time_id<48){
+					var _hour = parseInt(time_id/2); 
+					var _min = (time_id%2)*30;
+					time_id = time_id + 1;
+					}else{
+						var _hour = 0;
+						var _min = 0;
+						time_id = 1;
+					}
+				if (_hour<10){
+					_hour = '0' + _hour;
+				}
+				if (_min<10){
+					_min = '0' + _min;
+				}
+				var clock = $('#clock').text(_hour+":"+_min);
+				console.log('DisplayTime: '+_hour+":"+_min);
+				return time_id;
+				}
 
 			// code for openstreet map tile
-			// var map = L.map('mapid').setView([13.736717, 100.523186], 11);
-			/*
-			L.tileLayer( 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-			    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-			    maxZoom: 20
-			}).addTo( map );
-			*/
-
 		    var map = L.map('mapid', {
 			    layers: MQ.mapLayer(),
 			    center: [ 13.736717, 100.523186 ],
 			    zoom: 13,
 			    renderer: L.canvas(),
 			    });
-
-			var json = {{ data|safe }};
-			console.log("Number of the records:",json.features.length);
 
 			function getColor(d) {
 				var colors = ['#238b45','#fee0d2','#fc9272','#de2d26'];
@@ -104,13 +146,74 @@
 			};
 
 			legend.addTo(map);
-
-			L.geoJSON(json, {
+			/*
+			var geoLayer = L.geoJSON(json, {
 			    pointToLayer: function (feature, latlng) {
 			    	var style = getStyle(feature.properties.speed);
 			        return L.circleMarker(latlng, style);
 			    }
 			}).addTo(map);
+			*/
+			function createMap() {
+			    var geoData; 
+			    $.ajax('./update_map', {
+				    data: {'time': time_id},
+				    dataType: 'json',
+				    success: function (data){
+				    	console.log("Time_id of data:"+time_id); 
+				        // update time_id
+					    if (!realTime){
+					    	getTime();
+					    };
+					    // remove existed geoLayer
+				        if (exist){
+				        	geoLayer.remove();
+				        }
+				        geoLayer = L.geoJSON(data, {
+		                    pointToLayer: function (feature, latlng) {
+		                        var style = getStyle(feature.properties.speed);
+		                        return L.circleMarker(latlng, style);}
+				        });
+				        // update map
+				        geoLayer.addTo(map);
+				        // set exist to true
+				        exist = true;
+				        console.log('Updating the geolayer');
+				    } 
+			    });
+	
+            };
+            // get current time
+            var realTime = true;
+            // varible to control existence geoLayer
+            var exist = false;
+			getTime();
+			createMap();
+			$("#clock").click(function(){
+				realTime = true;
+				getTime();		
+				createMap();
+			});
+			$("#control").click(function(){
+				var value = $('#control').val();
+				console.log(value);
+				if (value === "Autoplay"){
+					value = "Stop";
+				}else{
+					value = "Autoplay";
+				}
+				$("#control").attr("value",value);
+				// update visualization on the basis of control
+				if (value === "Stop"){
+					realTime = false;
+					time_id = 0;		
+					int1 = setInterval(createMap, 5000);
+				}else{
+					console.log('cleaning setInterval...'); 
+					clearInterval(int1);
+				}
+				
+				});
 
 		</script>
 	</body>

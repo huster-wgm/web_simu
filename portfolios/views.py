@@ -198,8 +198,13 @@ def bio_result(request):
 
 
 def congestion(request):
-    extract_records = data_by_time(0)
+    return render(request, 'portfolios/congestion.html')
+
+
+def update_map(request):
+    time = int(request.GET['time'])
+    extract_records = data_by_time(time)
     geo_property = ['speed', 'counts']
     geojson = df_to_geojson(extract_records, geo_property)
-    context = {'data': geojson}
-    return render(request, 'portfolios/congestion.html', context)
+    from django.http import JsonResponse
+    return JsonResponse(geojson)

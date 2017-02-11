@@ -12,6 +12,8 @@ urlpatterns = [
     url(r'^bio_calculator$', views.bio_calculator, name="bio_calculator"),
     # ex: /congestion
     url(r'^congestion_map$', views.congestion, name="congestion_map"),
+    # ex: /update_map
+    url(r'^update_map$', views.update_map, name="update_map"),
     # ex: /bio_result
     url(r'^bio_result$', views.bio_result, name="bio_result"),
 ]
