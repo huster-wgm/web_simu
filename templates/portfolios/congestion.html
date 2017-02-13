@@ -195,7 +195,7 @@
 				realTime = true;
 				getTime();		
 				createMap();
-				if (int1){
+				if ($("#control").val() === 'Stop'){
 					$("#control").attr("value",'Autoplay');
 					console.log('cleaning setInterval...');
 					clearInterval(int1);
