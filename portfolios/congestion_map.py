@@ -3,8 +3,8 @@ import numpy as np
 import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
-header = ['grid_id', 'time_id', 'avg_speed', 'num']
-data = pd.read_csv(BASE_DIR+'/static/data/congestion_500x.csv', names=header)
+# columns = ['grid_id', 'time_id', 'avg_speed', 'num']
+data = pd.read_csv(BASE_DIR+'/static/data/sample_500x.csv')
 # initial parameters
 # set bangkok range
 lon_w, lon_e = 100.40, 100.70

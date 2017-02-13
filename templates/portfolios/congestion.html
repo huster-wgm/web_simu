@@ -7,7 +7,6 @@
 		<link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css" />
 		<script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-		<script src="https://open.mapquestapi.com/sdk/leaflet/v2.2/mq-map.js?key=t6bqLYrVfG5MgE1RFRXFTVK7Omc5GALe"></script>
 		<style type="text/css">
 		
 			html, body { 
@@ -31,8 +30,8 @@
 			    color: #555;
 			}
 			.legend i {
-			    width: 30px;
-			    height: 30px;
+			    width: 29px;
+			    height: 29px;
 			    float: left;
 			    margin-right: 5px;
 			    opacity: 0.7;
@@ -96,14 +95,21 @@
 				console.log('DisplayTime: '+_hour+":"+_min);
 				return time_id;
 				}
-
-			// code for openstreet map tile
+			/*
+			// code for open.mapquest tile
 		    var map = L.map('mapid', {
 			    layers: MQ.mapLayer(),
 			    center: [ 13.736717, 100.523186 ],
 			    zoom: 13,
 			    renderer: L.canvas(),
 			    });
+			*/
+		    // code for mapbox tile
+		    var map = L.map('mapid',{renderer: L.canvas()}).setView([13.736717, 100.523186], 13);
+			L.tileLayer( 'https://api.mapbox.com/styles/v1/mapbox/streets-v10/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaHVzdGVyLXdnbSIsImEiOiJjaXl2OGo4ODkwMDE2Mnd1eml6ZjR2bHFhIn0.cNsihlDcPlI1eEuNwl_-vg', {
+			    attribution: '&copy; <a href="http://huster-wgm.herokuapp.com/">Huster-wgm</a> Imagery © <a href="http://mapbox.com">Mapbox</a>',
+			    maxZoom: 20
+			}).addTo( map );	
 
 			function getColor(d) {
 				var colors = ['#238b45','#fee0d2','#fc9272','#de2d26'];
@@ -147,12 +153,7 @@
 
 			legend.addTo(map);
 			/*
-			var geoLayer = L.geoJSON(json, {
-			    pointToLayer: function (feature, latlng) {
-			    	var style = getStyle(feature.properties.speed);
-			        return L.circleMarker(latlng, style);
-			    }
-			}).addTo(map);
+			request data from server and visualize by creating geoLayer
 			*/
 			function createMap() {
 			    var geoData; 
@@ -169,6 +170,7 @@
 				        if (exist){
 				        	geoLayer.remove();
 				        }
+				        console.log("Number of points: "+data.features.length);
 				        geoLayer = L.geoJSON(data, {
 		                    pointToLayer: function (feature, latlng) {
 		                        var style = getStyle(feature.properties.speed);
@@ -185,7 +187,7 @@
             };
             // get current time
             var realTime = true;
-            // varible to control existence geoLayer
+            // varible indicate existence of geoLayer
             var exist = false;
 			getTime();
 			createMap();
@@ -207,7 +209,7 @@
 				if (value === "Stop"){
 					realTime = false;
 					time_id = 0;		
-					int1 = setInterval(createMap, 5000);
+					int1 = setInterval(createMap, 1000);
 				}else{
 					console.log('cleaning setInterval...'); 
 					clearInterval(int1);
