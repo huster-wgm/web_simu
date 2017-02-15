@@ -82,7 +82,7 @@ def df_to_geojson(df, properties, feature_type='Point'):
 
 if __name__ == "__main__":
     extract_records = data_by_time(0)
-    test = extract_records.loc[0:10, :]
+    test = extract_records.iloc[0:10, :]
     geo_property = ['speed', 'counts']
     geojson = df_to_geojson(test, geo_property)
     print(type(geojson), ':')

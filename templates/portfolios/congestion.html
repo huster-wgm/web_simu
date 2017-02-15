@@ -7,6 +7,7 @@
 		<link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css" />
 		<script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+		<script src="https://open.mapquestapi.com/sdk/leaflet/v2.2/mq-map.js?key=t6bqLYrVfG5MgE1RFRXFTVK7Omc5GALe"></script>
 		<style type="text/css">
 		
 			html, body { 
@@ -95,21 +96,38 @@
 				console.log('DisplayTime: '+_hour+":"+_min);
 				return time_id;
 				}
-			/*
-			// code for open.mapquest tile
-		    var map = L.map('mapid', {
-			    layers: MQ.mapLayer(),
-			    center: [ 13.736717, 100.523186 ],
-			    zoom: 13,
-			    renderer: L.canvas(),
-			    });
-			*/
+
 		    // code for mapbox tile
-		    var map = L.map('mapid',{renderer: L.canvas()}).setView([13.736717, 100.523186], 13);
-			L.tileLayer( 'https://api.mapbox.com/styles/v1/mapbox/streets-v10/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaHVzdGVyLXdnbSIsImEiOiJjaXl2OGo4ODkwMDE2Mnd1eml6ZjR2bHFhIn0.cNsihlDcPlI1eEuNwl_-vg', {
-			    attribution: '&copy; <a href="http://huster-wgm.herokuapp.com/">Huster-wgm</a> Imagery © <a href="http://mapbox.com">Mapbox</a>',
-			    maxZoom: 20
-			}).addTo( map );	
+		    var Attr = '&copy; <a href="http://huster-wgm.herokuapp.com/">Huster-wgm</a> Imagery © <a href="http://mapbox.com">Mapbox</a>',
+		    	light_url = 'https://api.mapbox.com/styles/v1/mapbox/light-v9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaHVzdGVyLXdnbSIsImEiOiJjaXl2OGo4ODkwMDE2Mnd1eml6ZjR2bHFhIn0.cNsihlDcPlI1eEuNwl_-vg',
+		    	street_url = 'https://api.mapbox.com/styles/v1/mapbox/streets-v10/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaHVzdGVyLXdnbSIsImEiOiJjaXl2OGo4ODkwMDE2Mnd1eml6ZjR2bHFhIn0.cNsihlDcPlI1eEuNwl_-vg',
+		    	stallite_url = 'https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v10/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaHVzdGVyLXdnbSIsImEiOiJjaXl2OGo4ODkwMDE2Mnd1eml6ZjR2bHFhIn0.cNsihlDcPlI1eEuNwl_-vg',
+		    	dark_url = 'https://api.mapbox.com/styles/v1/mapbox/dark-v9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaHVzdGVyLXdnbSIsImEiOiJjaXl2OGo4ODkwMDE2Mnd1eml6ZjR2bHFhIn0.cNsihlDcPlI1eEuNwl_-vg';
+
+
+
+			var mb_light = L.tileLayer(light_url, {attribution: Attr}),
+				mb_street = L.tileLayer(street_url, {attribution: Attr}),
+				mb_dark = L.tileLayer(dark_url, {attribution: Attr}),
+				mb_stallite = L.tileLayer(stallite_url, {attribution: Attr}),
+				MQ_tile = MQ.mapLayer();
+
+		    var map = L.map('mapid',{
+		    	layers:[MQ_tile, mb_light, mb_street, mb_dark, mb_stallite],
+		    	center:[13.736717, 100.523186],
+		    	zoom: 13,
+		    	renderer: L.canvas(),
+		    });
+
+			var Layers = {
+				"MapRequest": MQ_tile,
+				"Mapbox Light": mb_light,
+				"Mapbox Street": mb_street,
+				"Mapbox Dark": mb_dark,
+				"Mapbox Stallite":mb_stallite,
+			};
+
+			L.control.layers(Layers).addTo(map);
 
 			function getColor(d) {
 				var colors = ['#238b45','#fee0d2','#fc9272','#de2d26'];
