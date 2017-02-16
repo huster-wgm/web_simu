@@ -57,7 +57,6 @@
 		</style>
 	</head>
 	<body>
-		<h1 style="text-align:center">Congestion map for Bangkok</h1>
 		<div id='clock'></div>
   			<input type="button" id='control' value ='Autoplay'>
 		<div id="mapid"></div>
@@ -137,17 +136,6 @@
 			                      colors[3];
 			}
 
-			function getStyle(speed) {
-			    return {
-			        fillColor: getColor(speed),
-				    radius: 4,
-				    color:"white",
-				    weight: 1,
-				    opacity: 1,
-				    fillOpacity: 0.8
-			    };
-			}
-
 			var legend = L.control({position: 'bottomright'});
 			legend.onAdd = function (map) {
 
@@ -174,12 +162,12 @@
 			request data from server and visualize by creating geoLayer
 			*/
 			function createMap() {
-			    var geoData; 
+			    var geoData;
 			    $.ajax('./update_map', {
 				    data: {'time': time_id},
 				    dataType: 'json',
 				    success: function (data){
-				    	console.log("Time_id of data:"+time_id); 
+				    	console.log("Time_id of data:"+time_id);
 				        // update time_id
 					    if (!realTime){
 					    	getTime();
@@ -190,9 +178,13 @@
 				        }
 				        console.log("Number of points: "+data.features.length);
 				        geoLayer = L.geoJSON(data, {
-		                    pointToLayer: function (feature, latlng) {
-		                        var style = getStyle(feature.properties.speed);
-		                        return L.circleMarker(latlng, style);}
+				        	style:function(feature){
+								    return {
+								        color: getColor(feature.properties.speed),
+									    weight: 2,
+									    fillOpacity: 0.9
+								    };
+				        	}
 				        });
 				        // update map
 				        geoLayer.addTo(map);

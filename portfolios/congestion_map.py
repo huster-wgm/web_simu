@@ -1,47 +1,54 @@
 import pandas as pd
-import numpy as np
+import json
 import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
-# columns = ['grid_id', 'time_id', 'avg_speed', 'num']
-data = pd.read_csv(BASE_DIR+'/static/data/sample_500x.csv')
-# initial parameters
-# set bangkok range
-lon_w, lon_e = 100.40, 100.70
-lat_s, lat_n = 13.60, 13.90
-# set time interval /min
-time_interval = 30
-time_range = np.arange(0, 60 * 24, time_interval) + time_interval // 2
-# grid_nums and grid_interval
-grid_nums = 500
-grid_interval = 0.30 / grid_nums
 
 
-# extract result by time period
+def get_ref():
+    file = BASE_DIR+'/static/data/majorRoads.geojson'
+    with open(file, 'r') as f:
+        geo_features = json.load(f)
+        features = geo_features['features']
+    """
+    example record in features
+
+        {
+          "type": "Feature",
+          "geometry": {
+            "type": "MultiLineString",
+            "coordinates": [[100.5733156, 13.7737855],
+                            [100.5733266, 13.7739458]]
+          },
+          "properties": {
+            "clazz":15.0,
+            "gid":167277,
+            "id":187429.0,
+            "source":60592.0,
+            "target":156125.0
+          }
+        }
+
+    """
+    refs = {}
+    for feature in features:
+        gid = feature['properties']['gid']
+        coords = feature['geometry']["coordinates"]
+        refs[gid] = coords
+
+    return refs
+
+
 def data_by_time(time):
-    # ['grid_id','time_id','avg_speed','num']
-    lon_axis = []
-    lat_axis = []
-    avg_speed = []
-    num_of_records = []
-    # extract records by certain time_period
-    records = data.values[data.values[:, 1] == time, :]
-    for i in range(records.shape[0]):
-        lat_axis.append((records[i, 0] // grid_nums) * grid_interval + lat_s)
-        lon_axis.append((records[i, 0] % grid_nums) * grid_interval + lon_w)
-        avg_speed.append(records[i, 2])
-        num_of_records.append(records[i, 3])
-    # save in np.array
-    com = np.array([lon_axis, lat_axis, avg_speed, num_of_records]).reshape(4, -1)
-    com = np.transpose(com)
-    # save in DataFrame
-    df = pd.DataFrame(com, columns=['lon', 'lat', 'speed', 'counts'])
-
-    return df
+    # columns = [grid_id,time_id,speed,counts,gid]
+    file = BASE_DIR+'/static/data/mapResult_500x.csv'
+    data = pd.read_csv(file)
+    # initial parameters
+    data = data[data["time_id"] == time]
+    return data
 
 
-# convert DataFrame to geojson dict
-def df_to_geojson(df, properties, feature_type='Point'):
+def df_to_geojson(df, refer):
     """
     Turn a DataFrame containing point data into a geojson formatted python dictionary
 
@@ -64,16 +71,15 @@ def df_to_geojson(df, properties, feature_type='Point'):
         # create a feature template
         feature = {'type': 'Feature',
                    'properties': {},
-                   'geometry': {'type': feature_type,
+                   'geometry': {'type': 'MultiLineString',
                                 'coordinates': []}}
 
         # fill in the coordinates
-        feature['geometry']['coordinates'] = [record['lon'], record['lat']]
+        feature['geometry']['coordinates'] = refer[int(record['gid'])]
 
         # for each column, get the value and add it as a new feature property
-        for prop in properties:
-            feature['properties'][prop] = record[prop]
-
+        feature['properties']['speed'] = record['speed']
+        feature['properties']['gid'] = record['gid']
         # add this feature
         geojson['features'].append(feature)
     # convert geojson dict to str
@@ -81,10 +87,9 @@ def df_to_geojson(df, properties, feature_type='Point'):
 
 
 if __name__ == "__main__":
-    extract_records = data_by_time(0)
-    test = extract_records.iloc[0:10, :]
-    geo_property = ['speed', 'counts']
-    geojson = df_to_geojson(test, geo_property)
+    records = data_by_time(32)
+    refers = get_ref()
+    geojson = df_to_geojson(records, refers)
     print(type(geojson), ':')
-    print(geojson)
+    print(geojson['features'][0])
 

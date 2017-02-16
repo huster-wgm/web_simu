@@ -1,6 +1,6 @@
 from .simulator import FitModels, generate_result
 from .bio_calc import BioCalculator, create_freq_map
-from .congestion_map import data_by_time, df_to_geojson
+from .congestion_map import data_by_time, df_to_geojson, get_ref
 from django.shortcuts import render
 from django.http import JsonResponse
 import pandas as pd
@@ -204,7 +204,9 @@ def congestion(request):
 
 def update_map(request):
     time = int(request.GET['time'])
-    extract_records = data_by_time(time)
-    geo_property = ['speed']
-    geojson = df_to_geojson(extract_records, geo_property)
+    if time == 48:
+        time = 0
+    records = data_by_time(time)
+    refers = get_ref()
+    geojson = df_to_geojson(records, refers)
     return JsonResponse(geojson)
