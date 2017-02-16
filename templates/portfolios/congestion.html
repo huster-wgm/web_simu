@@ -62,38 +62,48 @@
 		<div id="mapid"></div>
 		<script>
 			var hour = 0;
-			var min = 0;
-			var time_id = 0;
+				min = 0,
+				utc_id = 0,
+				local_time_id = 0;
+
 			function getTime(){
 				if (realTime){
 					var now = new Date();
 					var _hour = now.getHours();
 					var _min = now.getMinutes();
 					if(_min<20){
-						time_id = _hour*2;
+						local_time_id = _hour*2;
 					}else if(_min<40){
-						time_id = _hour*2+1;
+						local_time_id = _hour*2+1;
 					}else{
-						time_id = _hour*2+2;
+						local_time_id = _hour*2+2;
 					}
-				}else if(time_id<48){
-					var _hour = parseInt(time_id/2); 
-					var _min = (time_id%2)*30;
-					time_id = time_id + 1;
+					// utc_id, local(bangkok) = UTC+7
+					utc_id = local_time_id -14
+					if(utc_id <0){
+						utc_id = utc_id + 48;
+					}
+				}else if(utc_id<48){
+					var _hour = parseInt(utc_id/2)+7; 
+					var _min = (utc_id%2)*30;
+					utc_id = utc_id + 1;
 					}else{
-						var _hour = 0;
+						var _hour = 7;
 						var _min = 0;
-						time_id = 1;
+						utc_id = 1;
 					}
 				if (_hour<10){
+					_hour = '0' + _hour;
+				}else if (_hour >= 24){
+					_hour = _hour-24;
 					_hour = '0' + _hour;
 				}
 				if (_min<10){
 					_min = '0' + _min;
 				}
 				var clock = $('#clock').text(_hour+":"+_min);
-				console.log('DisplayTime: '+_hour+":"+_min);
-				return time_id;
+				console.log('LocalTime: '+_hour+":"+_min);
+				return utc_id;
 				}
 
 		    // code for mapbox tile
@@ -162,13 +172,12 @@
 			request data from server and visualize by creating geoLayer
 			*/
 			function createMap() {
-			    var geoData;
+			    var geoData; 
 			    $.ajax('./update_map', {
-				    data: {'time': time_id},
+				    data: {'time': utc_id},
 				    dataType: 'json',
 				    success: function (data){
-				    	console.log("Time_id of data:"+time_id);
-				        // update time_id
+				        // update utc_id
 					    if (!realTime){
 					    	getTime();
 					    };
@@ -223,7 +232,7 @@
 				// update visualization on the basis of control
 				if (value === "Stop"){
 					realTime = false;
-					time_id = 0;		
+					utc_id = 34;		
 					int1 = setInterval(createMap, 1000);
 				}else{
 					console.log('cleaning setInterval...'); 
