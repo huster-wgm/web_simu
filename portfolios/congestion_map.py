@@ -79,7 +79,7 @@ def df_to_geojson(df, refer):
 
         # for each column, get the value and add it as a new feature property
         feature['properties']['speed'] = record['speed']
-        feature['properties']['gid'] = record['gid']
+        # feature['properties']['gid'] = record['gid']
         # add this feature
         geojson['features'].append(feature)
     # convert geojson dict to str
