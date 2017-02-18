@@ -65,6 +65,7 @@
 				min = 0,
 				utc_id = 0,
 				local_time_id = 0;
+			var ref = {{ ref | safe }};
 
 			function getTime(){
 				if (realTime){
@@ -105,6 +106,31 @@
 				console.log('LocalTime: '+_hour+":"+_min);
 				return utc_id;
 				}
+
+			function dataBinding(data){
+				var features = [],
+					len = data.records.length;
+				console.log("Number of records: "+len);
+				for (var i=0;i<len;i++){
+					var record = data.records[i],
+						gid = Object.keys(record);
+					var feature = {
+			          "type": "Feature",
+			          "geometry": {
+			            "type": "MultiLineString",
+			            "coordinates":ref[gid]
+			          },
+			          "properties": {
+			            "gid":gid,
+			            "speed":record[gid]
+			          }
+			        };
+			        features.push(feature);
+				}
+				var geojson = {'type': 'FeatureCollection', 
+								'features': features};
+				return geojson;
+			};
 
 		    // code for mapbox tile
 		    var Attr = '&copy; <a href="http://huster-wgm.herokuapp.com/">Huster-wgm</a> Imagery © <a href="http://mapbox.com">Mapbox</a>',
@@ -181,12 +207,12 @@
 					    if (!realTime){
 					    	getTime();
 					    };
+					    var geojson = dataBinding(data);
 					    // remove existed geoLayer
 				        if (exist){
 				        	geoLayer.remove();
-				        }
-				        console.log("Number of points: "+data.features.length);
-				        geoLayer = L.geoJSON(data, {
+				        };
+				        geoLayer = L.geoJSON(geojson, {
 				        	style:function(feature){
 								    return {
 								        color: getColor(feature.properties.speed),

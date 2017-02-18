@@ -21,31 +21,31 @@ def get_ref():
                             [100.5733266, 13.7739458]]
           },
           "properties": {
-            "clazz":15.0,
             "gid":167277,
-            "id":187429.0,
-            "source":60592.0,
-            "target":156125.0
           }
         }
 
     """
-    refs = {}
+    ref = {}
     for feature in features:
         gid = feature['properties']['gid']
         coords = feature['geometry']["coordinates"]
-        refs[gid] = coords
+        ref[str(int(gid))] = coords
 
-    return refs
+    return ref
 
 
 def data_by_time(time):
     # columns = [grid_id,time_id,speed,counts,gid]
     file = BASE_DIR+'/static/data/mapResult_500x.csv'
-    data = pd.read_csv(file)
+    datas = pd.read_csv(file)
     # initial parameters
-    data = data[data["time_id"] == time]
-    return data
+    datas = datas[datas["time_id"] == time]
+    records = []
+    for idx, data in datas.iterrows():
+        record = {str(int(data["gid"])):data["speed"]}
+        records.append(record)
+    return records
 
 
 def df_to_geojson(df, refer):
@@ -87,9 +87,10 @@ def df_to_geojson(df, refer):
 
 
 if __name__ == "__main__":
-    records = data_by_time(32)
+    # records = data_by_time(32)
     refers = get_ref()
-    geojson = df_to_geojson(records, refers)
-    print(type(geojson), ':')
-    print(geojson['features'][0])
+    records = data_by_time(0)
+    print(type(refers), ':')
 
+    print('length', len(records), records[0])
+    print({'records':records})

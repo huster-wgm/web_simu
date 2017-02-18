@@ -1,6 +1,6 @@
 from .simulator import FitModels, generate_result
 from .bio_calc import BioCalculator, create_freq_map
-from .congestion_map import data_by_time, df_to_geojson, get_ref
+from .congestion_map import data_by_time, get_ref
 from django.shortcuts import render
 from django.http import JsonResponse
 import pandas as pd
@@ -199,7 +199,9 @@ def bio_result(request):
 
 
 def congestion(request):
-    return render(request, 'portfolios/congestion.html')
+    ref = get_ref()
+    context = {'ref': ref}
+    return render(request, 'portfolios/congestion.html', context)
 
 
 def update_map(request):
@@ -207,6 +209,5 @@ def update_map(request):
     if time == 48:
         time = 0
     records = data_by_time(time)
-    refers = get_ref()
-    geojson = df_to_geojson(records, refers)
-    return JsonResponse(geojson)
+    context = {'records':records}
+    return JsonResponse(context)
